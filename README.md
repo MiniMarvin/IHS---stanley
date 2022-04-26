@@ -1,1 +1,1 @@
-# IHS Stanley
+Utilizando a placa DE2i-150
