@@ -1,1 +1,1 @@
-# IHS---stanley
+# IHS Stanley
