@@ -224,7 +224,7 @@ static ssize_t my_write(struct file* filp, const char __user* buf, size_t count,
 	return retval;
 }
 
-static long int my_ioctl(struct file*, unsigned int cmd, unsigned long arg)
+static long int my_ioctl(struct file* my_file, unsigned int cmd, unsigned long arg)
 {
 	switch(cmd){
 	case RD_SWITCHES:
