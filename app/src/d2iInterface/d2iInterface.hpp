@@ -14,7 +14,12 @@ enum D2iDevice {
 
 class D2iInterface {
 private:
+    const int displayMap[16] = {0xC0, 0xF9, 0xA4, 0xB0, 
+        0x99, 0x92, 0x82, 0xF8, 0x80, 0x90, 0x88, 
+        0x83, 0xC6, 0xA1, 0x86, 0x8E};
     int fileDescriptor;
+    unsigned int printSingleDisplayNum(int num);
+    unsigned int printDisplayNum(int num);
 public:
     D2iInterface(char* driverPath);
     ~D2iInterface();
@@ -22,8 +27,8 @@ public:
     int writeValue(unsigned int data, D2iDevice device);
     unsigned int readValue(unsigned int bytes, D2iDevice device);
     
-    void leftDisplayWrite(int num);
-    void rightDisplayWrite(int num);
+    int leftDisplayWrite(int num);
+    int rightDisplayWrite(int num);
     
     unsigned int readButtons();
     bool readButton(int index);
@@ -31,10 +36,10 @@ public:
     unsigned int readSwitches();
     bool readSwitch(int index);
     
-    void writeGreenLeds(unsigned int bits);
-    void writeGreenLed(bool value, int index);
-    void writeRedLeds(unsigned int bits);
-    void writeRedLed(bool value, int index);
+    int writeGreenLeds(unsigned int bits);
+    int writeGreenLed(bool value, int index);
+    int writeRedLeds(unsigned int bits);
+    int writeRedLed(bool value, int index);
 };
 
 #endif

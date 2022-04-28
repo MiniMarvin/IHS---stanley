@@ -67,3 +67,31 @@ unsigned int D2iInterface::readValue(unsigned int bytes, D2iDevice device) {
 	read(fileDescriptor, &data, bytes);
 	return data;
 }
+
+int D2iInterface::leftDisplayWrite(int num) {
+	unsigned int displayData = this->printDisplayNum(num);
+	return this->writeValue(displayData, DISPLAY_LEFT);
+}
+
+int D2iInterface::rightDisplayWrite(int num) {
+	unsigned int displayData = this->printDisplayNum(num);
+	return this->writeValue(displayData, DISPLAY_RIGHT);
+}
+
+unsigned int D2iInterface::printSingleDisplayNum(int num) {
+	if (num < 0 || num > 15) return 0;
+	return this->displayMap[num];
+}
+
+unsigned int D2iInterface::printDisplayNum(int num) {
+	int d0 = num%10;
+	int d1 = (num/10)%10;
+	int d2 = (num/100)%10;
+	
+	unsigned int displayData0 = this->printDisplayNum(d0);
+	unsigned int displayData1 = this->printDisplayNum(d1);
+	unsigned int displayData2 = this->printDisplayNum(d2);
+	unsigned int displayData = ((displayData2 << 16) |
+		(displayData1 << 8) | displayData0);
+	return displayData;
+}
