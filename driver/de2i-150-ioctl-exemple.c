@@ -85,6 +85,8 @@ static void* display_r = NULL;
 static void* display_l = NULL;
 static void* switches = NULL;
 static void* p_buttons = NULL;
+static void* green_leds = NULL;
+static void* red_leds = NULL;
 
 static void* read_pointer = NULL;
 static void* write_pointer = NULL;
@@ -243,6 +245,14 @@ static long int my_ioctl(struct file* my_file, unsigned int cmd, unsigned long a
 		write_pointer = display_r;
 		write_name_index = 2 + 1;
 		break;
+	case WR_RED_LEDS:
+		write_pointer = red_leds;
+		write_name_index = 4;
+		break;
+	case WR_GREEN_LEDS:
+		write_pointer = red_leds;
+		write_name_index = 5;
+		break;
 	default:
 		printk("my_driver: unknown ioctl command: 0x%X\n", cmd);
 	}
@@ -267,9 +277,11 @@ static int my_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
 	printk("my_driver: PCI device resources start at bar 0: 0x%lx\n", resource);
 	
 	display_r = ioremap(resource + 0xC000, 0x20);
-	display_l = ioremap(resource + 0xC140, 0x20);
-	switches = ioremap(resource + 0xC040, 0x20);
-	p_buttons = ioremap(resource + 0xC080, 0x20);
+	display_l = ioremap(resource + 0xF000, 0x20);
+	switches = ioremap(resource + 0xC020, 0x20);
+	p_buttons = ioremap(resource + 0xF300, 0x20);
+	green_leds = ioremap(resource + 0xF100, 0x20);
+	red_leds = ioremap(resource + 0xF200, 0x20);
 
 	read_pointer = switches; // default read peripheral pointer
 	write_pointer = display_r; // default write peripheral pointer
