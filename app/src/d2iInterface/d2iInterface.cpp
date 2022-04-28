@@ -1,4 +1,4 @@
-#include "echo.hpp"
+#include "d2iInterface.hpp"
 #include <stdio.h>	/* printf */
 #include <stdlib.h>	/* malloc, atoi, rand... */
 #include <string.h>	/* memcpy, strlen... */
@@ -12,9 +12,10 @@
 
 using namespace std;
 
-int echoLoop(char* driverPath) {
-    cout << endl;
-    cout << "Entering echo loop..." <<endl;
-	
-	return 0;
+D2iInterface::D2iInterface(char* driverPath) {
+    int fileDescriptor = 0;
+    if ((fileDescriptor = open(driverPath, O_RDWR)) < 0) {
+		fprintf(stderr, "Error opening file %s\n", driverPath);
+	}
+	cout << "Driver file " << driverPath << " loaded..." << endl;
 }
