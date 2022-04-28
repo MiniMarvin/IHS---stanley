@@ -1,0 +1,428 @@
+
+app/build/release/app:     file format elf64-x86-64
+
+Sections:
+Idx Name          Size      VMA               LMA               File off  Algn
+  0 .interp       0000001c  0000000000400238  0000000000400238  00000238  2**0
+                  CONTENTS, ALLOC, LOAD, READONLY, DATA
+  1 .note.ABI-tag 00000020  0000000000400254  0000000000400254  00000254  2**2
+                  CONTENTS, ALLOC, LOAD, READONLY, DATA
+  2 .note.gnu.build-id 00000024  0000000000400274  0000000000400274  00000274  2**2
+                  CONTENTS, ALLOC, LOAD, READONLY, DATA
+  3 .gnu.hash     00000024  0000000000400298  0000000000400298  00000298  2**3
+                  CONTENTS, ALLOC, LOAD, READONLY, DATA
+  4 .dynsym       00000120  00000000004002c0  00000000004002c0  000002c0  2**3
+                  CONTENTS, ALLOC, LOAD, READONLY, DATA
+  5 .dynstr       000000a2  00000000004003e0  00000000004003e0  000003e0  2**0
+                  CONTENTS, ALLOC, LOAD, READONLY, DATA
+  6 .gnu.version  00000018  0000000000400482  0000000000400482  00000482  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, DATA
+  7 .gnu.version_r 00000030  00000000004004a0  00000000004004a0  000004a0  2**3
+                  CONTENTS, ALLOC, LOAD, READONLY, DATA
+  8 .rela.dyn     00000048  00000000004004d0  00000000004004d0  000004d0  2**3
+                  CONTENTS, ALLOC, LOAD, READONLY, DATA
+  9 .rela.plt     000000c0  0000000000400518  0000000000400518  00000518  2**3
+                  CONTENTS, ALLOC, LOAD, READONLY, DATA
+ 10 .init         00000017  00000000004005d8  00000000004005d8  000005d8  2**2
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+ 11 .plt          00000090  00000000004005f0  00000000004005f0  000005f0  2**4
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+ 12 .text         000002e2  0000000000400680  0000000000400680  00000680  2**4
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+ 13 .fini         00000009  0000000000400964  0000000000400964  00000964  2**2
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+ 14 .rodata       00000140  0000000000400970  0000000000400970  00000970  2**3
+                  CONTENTS, ALLOC, LOAD, READONLY, DATA
+ 15 .eh_frame_hdr 00000034  0000000000400ab0  0000000000400ab0  00000ab0  2**2
+                  CONTENTS, ALLOC, LOAD, READONLY, DATA
+ 16 .eh_frame     00000100  0000000000400ae8  0000000000400ae8  00000ae8  2**3
+                  CONTENTS, ALLOC, LOAD, READONLY, DATA
+ 17 .init_array   00000008  0000000000600de0  0000000000600de0  00000de0  2**3
+                  CONTENTS, ALLOC, LOAD, DATA
+ 18 .fini_array   00000008  0000000000600de8  0000000000600de8  00000de8  2**3
+                  CONTENTS, ALLOC, LOAD, DATA
+ 19 .dynamic      00000200  0000000000600df0  0000000000600df0  00000df0  2**3
+                  CONTENTS, ALLOC, LOAD, DATA
+ 20 .got          00000010  0000000000600ff0  0000000000600ff0  00000ff0  2**3
+                  CONTENTS, ALLOC, LOAD, DATA
+ 21 .got.plt      00000058  0000000000601000  0000000000601000  00001000  2**3
+                  CONTENTS, ALLOC, LOAD, DATA
+ 22 .data         00000004  0000000000601058  0000000000601058  00001058  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+ 23 .bss          00000010  0000000000601060  0000000000601060  0000105c  2**5
+                  ALLOC
+ 24 .comment      0000002d  0000000000000000  0000000000000000  0000105c  2**0
+                  CONTENTS, READONLY
+ 25 .debug_aranges 00000030  0000000000000000  0000000000000000  00001089  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 26 .debug_info   00000678  0000000000000000  0000000000000000  000010b9  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 27 .debug_abbrev 0000018c  0000000000000000  0000000000000000  00001731  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 28 .debug_line   00000145  0000000000000000  0000000000000000  000018bd  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 29 .debug_str    00000330  0000000000000000  0000000000000000  00001a02  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 30 .debug_loc    0000018c  0000000000000000  0000000000000000  00001d32  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 31 .debug_ranges 00000020  0000000000000000  0000000000000000  00001ebe  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .init:
+
+00000000004005d8 <_init>:
+  4005d8:	48 83 ec 08          	sub    $0x8,%rsp
+  4005dc:	48 8b 05 15 0a 20 00 	mov    0x200a15(%rip),%rax        # 600ff8 <__gmon_start__>
+  4005e3:	48 85 c0             	test   %rax,%rax
+  4005e6:	74 02                	je     4005ea <_init+0x12>
+  4005e8:	ff d0                	callq  *%rax
+  4005ea:	48 83 c4 08          	add    $0x8,%rsp
+  4005ee:	c3                   	retq   
+
+Disassembly of section .plt:
+
+00000000004005f0 <.plt>:
+  4005f0:	ff 35 12 0a 20 00    	pushq  0x200a12(%rip)        # 601008 <_GLOBAL_OFFSET_TABLE_+0x8>
+  4005f6:	ff 25 14 0a 20 00    	jmpq   *0x200a14(%rip)        # 601010 <_GLOBAL_OFFSET_TABLE_+0x10>
+  4005fc:	0f 1f 40 00          	nopl   0x0(%rax)
+
+0000000000400600 <printf@plt>:
+  400600:	ff 25 12 0a 20 00    	jmpq   *0x200a12(%rip)        # 601018 <printf@GLIBC_2.2.5>
+  400606:	68 00 00 00 00       	pushq  $0x0
+  40060b:	e9 e0 ff ff ff       	jmpq   4005f0 <.plt>
+
+0000000000400610 <write@plt>:
+  400610:	ff 25 0a 0a 20 00    	jmpq   *0x200a0a(%rip)        # 601020 <write@GLIBC_2.2.5>
+  400616:	68 01 00 00 00       	pushq  $0x1
+  40061b:	e9 d0 ff ff ff       	jmpq   4005f0 <.plt>
+
+0000000000400620 <open@plt>:
+  400620:	ff 25 02 0a 20 00    	jmpq   *0x200a02(%rip)        # 601028 <open@GLIBC_2.2.5>
+  400626:	68 02 00 00 00       	pushq  $0x2
+  40062b:	e9 c0 ff ff ff       	jmpq   4005f0 <.plt>
+
+0000000000400630 <__isoc99_scanf@plt>:
+  400630:	ff 25 fa 09 20 00    	jmpq   *0x2009fa(%rip)        # 601030 <__isoc99_scanf@GLIBC_2.7>
+  400636:	68 03 00 00 00       	pushq  $0x3
+  40063b:	e9 b0 ff ff ff       	jmpq   4005f0 <.plt>
+
+0000000000400640 <fprintf@plt>:
+  400640:	ff 25 f2 09 20 00    	jmpq   *0x2009f2(%rip)        # 601038 <fprintf@GLIBC_2.2.5>
+  400646:	68 04 00 00 00       	pushq  $0x4
+  40064b:	e9 a0 ff ff ff       	jmpq   4005f0 <.plt>
+
+0000000000400650 <read@plt>:
+  400650:	ff 25 ea 09 20 00    	jmpq   *0x2009ea(%rip)        # 601040 <read@GLIBC_2.2.5>
+  400656:	68 05 00 00 00       	pushq  $0x5
+  40065b:	e9 90 ff ff ff       	jmpq   4005f0 <.plt>
+
+0000000000400660 <puts@plt>:
+  400660:	ff 25 e2 09 20 00    	jmpq   *0x2009e2(%rip)        # 601048 <puts@GLIBC_2.2.5>
+  400666:	68 06 00 00 00       	pushq  $0x6
+  40066b:	e9 80 ff ff ff       	jmpq   4005f0 <.plt>
+
+0000000000400670 <close@plt>:
+  400670:	ff 25 da 09 20 00    	jmpq   *0x2009da(%rip)        # 601050 <close@GLIBC_2.2.5>
+  400676:	68 07 00 00 00       	pushq  $0x7
+  40067b:	e9 70 ff ff ff       	jmpq   4005f0 <.plt>
+
+Disassembly of section .text:
+
+0000000000400680 <main>:
+#include <errno.h>	/* error codes */
+
+#include "display.h"
+
+int main(int argc, char** argv)
+{
+  400680:	55                   	push   %rbp
+  400681:	53                   	push   %rbx
+  400682:	48 89 f3             	mov    %rsi,%rbx
+  400685:	48 81 ec 18 01 00 00 	sub    $0x118,%rsp
+	int fd, len, retval;
+	char buf[255];
+	char cmd;
+
+	if (argc < 2) {
+  40068c:	83 ff 01             	cmp    $0x1,%edi
+  40068f:	0f 8e 73 01 00 00    	jle    400808 <main+0x188>
+		printf("Syntax: %s <device file path>\n", argv[0]);
+		return -EINVAL;
+	}
+
+	if ((fd = open(argv[1], O_RDWR)) < 0) {
+  400695:	48 8b 7e 08          	mov    0x8(%rsi),%rdi
+  400699:	31 c0                	xor    %eax,%eax
+  40069b:	be 02 00 00 00       	mov    $0x2,%esi
+  4006a0:	e8 7b ff ff ff       	callq  400620 <open@plt>
+  4006a5:	85 c0                	test   %eax,%eax
+  4006a7:	89 c5                	mov    %eax,%ebp
+  4006a9:	0f 88 38 01 00 00    	js     4007e7 <main+0x167>
+		fprintf(stderr, "Error opening file %s\n", argv[1]);
+		return -EBUSY;
+	}
+	printf("file: %s opened!\n", argv[1]);
+  4006af:	48 8b 73 08          	mov    0x8(%rbx),%rsi
+
+		switch (cmd) {
+		case 'r':
+			printf("how many bytes you want to read?\n");
+			scanf("%d%*c", &len);
+			retval = read(fd, buf, len);
+  4006b3:	48 8d 5c 24 10       	lea    0x10(%rsp),%rbx
+	printf("file: %s opened!\n", argv[1]);
+  4006b8:	bf 27 0a 40 00       	mov    $0x400a27,%edi
+  4006bd:	31 c0                	xor    %eax,%eax
+  4006bf:	e8 3c ff ff ff       	callq  400600 <printf@plt>
+		printf("Read or Write? [r,w]\nClose file [c]\n");
+  4006c4:	bf a0 09 40 00       	mov    $0x4009a0,%edi
+  4006c9:	e8 92 ff ff ff       	callq  400660 <puts@plt>
+		scanf("%c%*c", &cmd);
+  4006ce:	48 8d 74 24 0b       	lea    0xb(%rsp),%rsi
+  4006d3:	bf 39 0a 40 00       	mov    $0x400a39,%edi
+  4006d8:	31 c0                	xor    %eax,%eax
+  4006da:	e8 51 ff ff ff       	callq  400630 <__isoc99_scanf@plt>
+		printf("CMD: %c\n", cmd);
+  4006df:	0f be 74 24 0b       	movsbl 0xb(%rsp),%esi
+  4006e4:	31 c0                	xor    %eax,%eax
+  4006e6:	bf 3f 0a 40 00       	mov    $0x400a3f,%edi
+  4006eb:	e8 10 ff ff ff       	callq  400600 <printf@plt>
+		switch (cmd) {
+  4006f0:	0f b6 44 24 0b       	movzbl 0xb(%rsp),%eax
+  4006f5:	3c 72                	cmp    $0x72,%al
+  4006f7:	74 14                	je     40070d <main+0x8d>
+  4006f9:	3c 77                	cmp    $0x77,%al
+  4006fb:	74 7a                	je     400777 <main+0xf7>
+  4006fd:	3c 63                	cmp    $0x63,%al
+  4006ff:	74 59                	je     40075a <main+0xda>
+			close(fd);
+			printf("file closed, exiting...\n");
+			return EXIT_SUCCESS;
+			break;
+		default:
+			printf("invalid input. try again\n");
+  400701:	bf 97 0a 40 00       	mov    $0x400a97,%edi
+  400706:	e8 55 ff ff ff       	callq  400660 <puts@plt>
+			break;
+  40070b:	eb b7                	jmp    4006c4 <main+0x44>
+			printf("how many bytes you want to read?\n");
+  40070d:	bf c8 09 40 00       	mov    $0x4009c8,%edi
+  400712:	e8 49 ff ff ff       	callq  400660 <puts@plt>
+			scanf("%d%*c", &len);
+  400717:	48 8d 74 24 0c       	lea    0xc(%rsp),%rsi
+  40071c:	bf 48 0a 40 00       	mov    $0x400a48,%edi
+  400721:	31 c0                	xor    %eax,%eax
+  400723:	e8 08 ff ff ff       	callq  400630 <__isoc99_scanf@plt>
+			retval = read(fd, buf, len);
+  400728:	48 63 54 24 0c       	movslq 0xc(%rsp),%rdx
+  40072d:	48 89 de             	mov    %rbx,%rsi
+  400730:	89 ef                	mov    %ebp,%edi
+  400732:	e8 19 ff ff ff       	callq  400650 <read@plt>
+			buf[retval] = '\0';
+  400737:	48 63 d0             	movslq %eax,%rdx
+			printf("red: %s. with %d bytes\n", buf, retval);
+  40073a:	48 89 de             	mov    %rbx,%rsi
+  40073d:	bf 4e 0a 40 00       	mov    $0x400a4e,%edi
+			buf[retval] = '\0';
+  400742:	c6 44 14 10 00       	movb   $0x0,0x10(%rsp,%rdx,1)
+			printf("red: %s. with %d bytes\n", buf, retval);
+  400747:	89 c2                	mov    %eax,%edx
+  400749:	31 c0                	xor    %eax,%eax
+  40074b:	e8 b0 fe ff ff       	callq  400600 <printf@plt>
+			buf[0] = '\0';
+  400750:	c6 44 24 10 00       	movb   $0x0,0x10(%rsp)
+			break;
+  400755:	e9 6a ff ff ff       	jmpq   4006c4 <main+0x44>
+			close(fd);
+  40075a:	89 ef                	mov    %ebp,%edi
+  40075c:	e8 0f ff ff ff       	callq  400670 <close@plt>
+			printf("file closed, exiting...\n");
+  400761:	bf 7f 0a 40 00       	mov    $0x400a7f,%edi
+  400766:	e8 f5 fe ff ff       	callq  400660 <puts@plt>
+			return EXIT_SUCCESS;
+  40076b:	31 c0                	xor    %eax,%eax
+		}
+	}
+}
+  40076d:	48 81 c4 18 01 00 00 	add    $0x118,%rsp
+  400774:	5b                   	pop    %rbx
+  400775:	5d                   	pop    %rbp
+  400776:	c3                   	retq   
+			printf("type in what you want to write:\n");
+  400777:	bf f0 09 40 00       	mov    $0x4009f0,%edi
+  40077c:	e8 df fe ff ff       	callq  400660 <puts@plt>
+			scanf("%[^\n]%*c", buf);
+  400781:	48 89 de             	mov    %rbx,%rsi
+  400784:	bf 66 0a 40 00       	mov    $0x400a66,%edi
+  400789:	31 c0                	xor    %eax,%eax
+  40078b:	e8 a0 fe ff ff       	callq  400630 <__isoc99_scanf@plt>
+			retval = write(fd, buf, strlen(buf));
+  400790:	48 89 da             	mov    %rbx,%rdx
+  400793:	8b 0a                	mov    (%rdx),%ecx
+  400795:	48 83 c2 04          	add    $0x4,%rdx
+  400799:	8d 81 ff fe fe fe    	lea    -0x1010101(%rcx),%eax
+  40079f:	f7 d1                	not    %ecx
+  4007a1:	21 c8                	and    %ecx,%eax
+  4007a3:	25 80 80 80 80       	and    $0x80808080,%eax
+  4007a8:	74 e9                	je     400793 <main+0x113>
+  4007aa:	89 c1                	mov    %eax,%ecx
+  4007ac:	48 89 de             	mov    %rbx,%rsi
+  4007af:	89 ef                	mov    %ebp,%edi
+  4007b1:	c1 e9 10             	shr    $0x10,%ecx
+  4007b4:	a9 80 80 00 00       	test   $0x8080,%eax
+  4007b9:	0f 44 c1             	cmove  %ecx,%eax
+  4007bc:	48 8d 4a 02          	lea    0x2(%rdx),%rcx
+  4007c0:	48 0f 44 d1          	cmove  %rcx,%rdx
+  4007c4:	89 c1                	mov    %eax,%ecx
+  4007c6:	00 c1                	add    %al,%cl
+  4007c8:	48 83 da 03          	sbb    $0x3,%rdx
+  4007cc:	48 29 da             	sub    %rbx,%rdx
+  4007cf:	e8 3c fe ff ff       	callq  400610 <write@plt>
+			printf("wrote %d bytes\n", retval);
+  4007d4:	bf 6f 0a 40 00       	mov    $0x400a6f,%edi
+  4007d9:	89 c6                	mov    %eax,%esi
+  4007db:	31 c0                	xor    %eax,%eax
+  4007dd:	e8 1e fe ff ff       	callq  400600 <printf@plt>
+			break;
+  4007e2:	e9 dd fe ff ff       	jmpq   4006c4 <main+0x44>
+		fprintf(stderr, "Error opening file %s\n", argv[1]);
+  4007e7:	48 8b 53 08          	mov    0x8(%rbx),%rdx
+  4007eb:	48 8b 3d 6e 08 20 00 	mov    0x20086e(%rip),%rdi        # 601060 <stderr@@GLIBC_2.2.5>
+  4007f2:	be 10 0a 40 00       	mov    $0x400a10,%esi
+  4007f7:	31 c0                	xor    %eax,%eax
+  4007f9:	e8 42 fe ff ff       	callq  400640 <fprintf@plt>
+		return -EBUSY;
+  4007fe:	b8 f0 ff ff ff       	mov    $0xfffffff0,%eax
+  400803:	e9 65 ff ff ff       	jmpq   40076d <main+0xed>
+		printf("Syntax: %s <device file path>\n", argv[0]);
+  400808:	48 8b 36             	mov    (%rsi),%rsi
+  40080b:	bf 80 09 40 00       	mov    $0x400980,%edi
+  400810:	31 c0                	xor    %eax,%eax
+  400812:	e8 e9 fd ff ff       	callq  400600 <printf@plt>
+		return -EINVAL;
+  400817:	b8 ea ff ff ff       	mov    $0xffffffea,%eax
+  40081c:	e9 4c ff ff ff       	jmpq   40076d <main+0xed>
+  400821:	66 2e 0f 1f 84 00 00 	nopw   %cs:0x0(%rax,%rax,1)
+  400828:	00 00 00 
+  40082b:	0f 1f 44 00 00       	nopl   0x0(%rax,%rax,1)
+
+0000000000400830 <_start>:
+  400830:	31 ed                	xor    %ebp,%ebp
+  400832:	49 89 d1             	mov    %rdx,%r9
+  400835:	5e                   	pop    %rsi
+  400836:	48 89 e2             	mov    %rsp,%rdx
+  400839:	48 83 e4 f0          	and    $0xfffffffffffffff0,%rsp
+  40083d:	50                   	push   %rax
+  40083e:	54                   	push   %rsp
+  40083f:	49 c7 c0 60 09 40 00 	mov    $0x400960,%r8
+  400846:	48 c7 c1 00 09 40 00 	mov    $0x400900,%rcx
+  40084d:	48 c7 c7 80 06 40 00 	mov    $0x400680,%rdi
+  400854:	ff 15 96 07 20 00    	callq  *0x200796(%rip)        # 600ff0 <__libc_start_main@GLIBC_2.2.5>
+  40085a:	f4                   	hlt    
+  40085b:	0f 1f 44 00 00       	nopl   0x0(%rax,%rax,1)
+
+0000000000400860 <deregister_tm_clones>:
+  400860:	55                   	push   %rbp
+  400861:	b8 60 10 60 00       	mov    $0x601060,%eax
+  400866:	48 3d 60 10 60 00    	cmp    $0x601060,%rax
+  40086c:	48 89 e5             	mov    %rsp,%rbp
+  40086f:	74 12                	je     400883 <deregister_tm_clones+0x23>
+  400871:	b8 00 00 00 00       	mov    $0x0,%eax
+  400876:	48 85 c0             	test   %rax,%rax
+  400879:	74 08                	je     400883 <deregister_tm_clones+0x23>
+  40087b:	5d                   	pop    %rbp
+  40087c:	bf 60 10 60 00       	mov    $0x601060,%edi
+  400881:	ff e0                	jmpq   *%rax
+  400883:	5d                   	pop    %rbp
+  400884:	c3                   	retq   
+  400885:	90                   	nop
+  400886:	66 2e 0f 1f 84 00 00 	nopw   %cs:0x0(%rax,%rax,1)
+  40088d:	00 00 00 
+
+0000000000400890 <register_tm_clones>:
+  400890:	be 60 10 60 00       	mov    $0x601060,%esi
+  400895:	55                   	push   %rbp
+  400896:	48 81 ee 60 10 60 00 	sub    $0x601060,%rsi
+  40089d:	48 89 e5             	mov    %rsp,%rbp
+  4008a0:	48 c1 fe 03          	sar    $0x3,%rsi
+  4008a4:	48 89 f0             	mov    %rsi,%rax
+  4008a7:	48 c1 e8 3f          	shr    $0x3f,%rax
+  4008ab:	48 01 c6             	add    %rax,%rsi
+  4008ae:	48 d1 fe             	sar    %rsi
+  4008b1:	74 12                	je     4008c5 <register_tm_clones+0x35>
+  4008b3:	b8 00 00 00 00       	mov    $0x0,%eax
+  4008b8:	48 85 c0             	test   %rax,%rax
+  4008bb:	74 08                	je     4008c5 <register_tm_clones+0x35>
+  4008bd:	5d                   	pop    %rbp
+  4008be:	bf 60 10 60 00       	mov    $0x601060,%edi
+  4008c3:	ff e0                	jmpq   *%rax
+  4008c5:	5d                   	pop    %rbp
+  4008c6:	c3                   	retq   
+  4008c7:	66 0f 1f 84 00 00 00 	nopw   0x0(%rax,%rax,1)
+  4008ce:	00 00 
+
+00000000004008d0 <__do_global_dtors_aux>:
+  4008d0:	80 3d 91 07 20 00 00 	cmpb   $0x0,0x200791(%rip)        # 601068 <completed.6984>
+  4008d7:	75 12                	jne    4008eb <__do_global_dtors_aux+0x1b>
+  4008d9:	55                   	push   %rbp
+  4008da:	48 89 e5             	mov    %rsp,%rbp
+  4008dd:	e8 7e ff ff ff       	callq  400860 <deregister_tm_clones>
+  4008e2:	c6 05 7f 07 20 00 01 	movb   $0x1,0x20077f(%rip)        # 601068 <completed.6984>
+  4008e9:	5d                   	pop    %rbp
+  4008ea:	c3                   	retq   
+  4008eb:	f3 c3                	repz retq 
+  4008ed:	0f 1f 00             	nopl   (%rax)
+
+00000000004008f0 <frame_dummy>:
+  4008f0:	55                   	push   %rbp
+  4008f1:	48 89 e5             	mov    %rsp,%rbp
+  4008f4:	5d                   	pop    %rbp
+  4008f5:	eb 99                	jmp    400890 <register_tm_clones>
+  4008f7:	66 0f 1f 84 00 00 00 	nopw   0x0(%rax,%rax,1)
+  4008fe:	00 00 
+
+0000000000400900 <__libc_csu_init>:
+  400900:	41 57                	push   %r15
+  400902:	41 56                	push   %r14
+  400904:	49 89 d7             	mov    %rdx,%r15
+  400907:	41 55                	push   %r13
+  400909:	41 54                	push   %r12
+  40090b:	4c 8d 25 ce 04 20 00 	lea    0x2004ce(%rip),%r12        # 600de0 <__frame_dummy_init_array_entry>
+  400912:	55                   	push   %rbp
+  400913:	48 8d 2d ce 04 20 00 	lea    0x2004ce(%rip),%rbp        # 600de8 <__init_array_end>
+  40091a:	53                   	push   %rbx
+  40091b:	41 89 fd             	mov    %edi,%r13d
+  40091e:	49 89 f6             	mov    %rsi,%r14
+  400921:	4c 29 e5             	sub    %r12,%rbp
+  400924:	48 83 ec 08          	sub    $0x8,%rsp
+  400928:	48 c1 fd 03          	sar    $0x3,%rbp
+  40092c:	e8 a7 fc ff ff       	callq  4005d8 <_init>
+  400931:	48 85 ed             	test   %rbp,%rbp
+  400934:	74 18                	je     40094e <__libc_csu_init+0x4e>
+  400936:	31 db                	xor    %ebx,%ebx
+  400938:	4c 89 fa             	mov    %r15,%rdx
+  40093b:	4c 89 f6             	mov    %r14,%rsi
+  40093e:	44 89 ef             	mov    %r13d,%edi
+  400941:	41 ff 14 dc          	callq  *(%r12,%rbx,8)
+  400945:	48 83 c3 01          	add    $0x1,%rbx
+  400949:	48 39 dd             	cmp    %rbx,%rbp
+  40094c:	75 ea                	jne    400938 <__libc_csu_init+0x38>
+  40094e:	48 83 c4 08          	add    $0x8,%rsp
+  400952:	5b                   	pop    %rbx
+  400953:	5d                   	pop    %rbp
+  400954:	41 5c                	pop    %r12
+  400956:	41 5d                	pop    %r13
+  400958:	41 5e                	pop    %r14
+  40095a:	41 5f                	pop    %r15
+  40095c:	c3                   	retq   
+  40095d:	0f 1f 00             	nopl   (%rax)
+
+0000000000400960 <__libc_csu_fini>:
+  400960:	f3 c3                	repz retq 
+
+Disassembly of section .fini:
+
+0000000000400964 <_fini>:
+  400964:	48 83 ec 08          	sub    $0x8,%rsp
+  400968:	48 83 c4 08          	add    $0x8,%rsp
+  40096c:	c3                   	retq   
