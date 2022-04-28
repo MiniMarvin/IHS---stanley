@@ -10,14 +10,14 @@
 #include <iostream>
 
 #include "ioctl_cmds.h"
-//#include "./echoLoop/echo.hpp"
+#include "./echoLoop/echo.hpp"
 
 #define GAME_LOOP 0
 #define ECHO_LOOP 1
 
 using namespace std;
 
-char* fileName = (char*)"/dev/stanley_pci";
+char* driverPath = (char*)"/dev/stanley_pci";
 
 int configGame(int, char**);
 void configDriverPath(int, char**);
@@ -25,10 +25,15 @@ int configGameLoop(int, char**);
 
 int main(int argc, char** argv) {
 	int config = configGame(argc, argv);
+	int loop = 0;
 	if (config == ECHO_LOOP) {
-		//echoLoop();
+		loop = echoLoop(driverPath);
 	} else {
 		// add game loop
+	}
+	
+	if (loop != 0) {
+		cout << "There was an error on the game loop" << endl;
 	}
 	return 0;
 }
@@ -40,9 +45,9 @@ int configGame(int argc, char** argv) {
 
 void configDriverPath(int argc, char** argv) {
 	if (argc >= 2) {
-		strcpy(fileName, argv[1]);
+		strcpy(driverPath, argv[1]);
 	}
-	cout << "Loading driver path: " << fileName << endl;
+	cout << "Loading driver path: " << driverPath << endl;
 }
 
 int configGameLoop(int argc, char** argv) {

@@ -1,6 +1,6 @@
 #ifndef __ECHO_LOOP
 #define __ECHO_LOOP
 
-void echoLoop();
+int echoLoop(char*);
 
 #endif
