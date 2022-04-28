@@ -9,13 +9,16 @@
 #include <sys/ioctl.h>	/* ioctl() */
 #include <errno.h>	/* error codes */
 #include <iostream>
+#include "../exceptions/DriverException.hpp"
 
 using namespace std;
 
 D2iInterface::D2iInterface(char* driverPath) {
     int fileDescriptor = 0;
     if ((fileDescriptor = open(driverPath, O_RDWR)) < 0) {
-		fprintf(stderr, "Error opening file %s\n", driverPath);
+// 		fprintf(stderr, "Error opening file %s\n", driverPath);
+		throw(DriverException("Error opening driver file"));
 	}
 	cout << "Driver file " << driverPath << " loaded..." << endl;
+	this->fileDescriptor = fileDescriptor;
 }
