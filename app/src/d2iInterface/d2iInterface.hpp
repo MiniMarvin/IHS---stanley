@@ -19,21 +19,21 @@ public:
     D2iInterface(char* driverPath);
     ~D2iInterface();
     
-    void write(uint32_t bytes, D2iDevice device);
-    uint32_t read(uint32_t bytes, D2iDevice device);
+    int writeValue(unsigned int data, D2iDevice device);
+    unsigned int readValue(unsigned int bytes, D2iDevice device);
     
     void leftDisplayWrite(int num);
     void rightDisplayWrite(int num);
     
-    uint32_t readButtons();
+    unsigned int readButtons();
     bool readButton(int index);
     
-    uint32_t readSwitches();
+    unsigned int readSwitches();
     bool readSwitch(int index);
     
-    void writeGreenLeds(uint32_t bits);
+    void writeGreenLeds(unsigned int bits);
     void writeGreenLed(bool value, int index);
-    void writeRedLeds(uint32_t bits);
+    void writeRedLeds(unsigned int bits);
     void writeRedLed(bool value, int index);
 };
 
