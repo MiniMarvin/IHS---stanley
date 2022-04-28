@@ -12,8 +12,8 @@
 
 /* driver constants */
 
-#define DRIVER_NAME 	"my_driver"
-#define FILE_NAME 	"mydev"
+#define DRIVER_NAME 	"stanley_pci"
+#define FILE_NAME 	"stanley_pci"
 #define DRIVER_CLASS 	"MyModuleClass"
 #define MY_PCI_VENDOR_ID 0x1172
 #define MY_PCI_DEVICE_ID 0x0004
@@ -21,7 +21,7 @@
 /* meta information */
 
 MODULE_LICENSE("GPL");
-MODULE_AUTHOR("mfbsouza");
+MODULE_AUTHOR("mfbsouza;cmg");
 MODULE_DESCRIPTION("simple pci driver for DE2i-150 dev board");
 
 /* lkm entry and exit points */
