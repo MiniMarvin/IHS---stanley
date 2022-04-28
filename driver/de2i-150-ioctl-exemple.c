@@ -203,6 +203,7 @@ static ssize_t my_read(struct file* filp, char __user* buf, size_t count, loff_t
 
 static ssize_t my_write(struct file* filp, const char __user* buf, size_t count, loff_t* f_pos)
 {
+	// TODO: define the write protocol for the file
 	ssize_t retval = 0;
 	int to_cpy = 0;
 	static unsigned int temp_write = 0;
@@ -239,17 +240,17 @@ static long int my_ioctl(struct file* my_file, unsigned int cmd, unsigned long a
 		break;
 	case WR_L_DISPLAY:
 		write_pointer = display_l;
-		write_name_index = 2 + 0;
+		write_name_index = 2;
 		break;
 	case WR_R_DISPLAY:
 		write_pointer = display_r;
-		write_name_index = 2 + 1;
-		break;
-	case WR_RED_LEDS:
-		write_pointer = red_leds;
-		write_name_index = 4;
+		write_name_index = 3;
 		break;
 	case WR_GREEN_LEDS:
+		write_pointer = green_leds;
+		write_name_index = 4;
+		break;
+	case WR_RED_LEDS:
 		write_pointer = red_leds;
 		write_name_index = 5;
 		break;
@@ -298,5 +299,7 @@ static void my_pci_remove(struct pci_dev *dev)
 	iounmap(display_l);
 	iounmap(switches);
 	iounmap(p_buttons);
+	iounmap(red_leds);
+	iounmap(green_leds);
 	pci_disable_device(dev);
 }

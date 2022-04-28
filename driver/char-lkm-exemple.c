@@ -167,6 +167,8 @@ static ssize_t my_read(struct file* filp, char __user* buf, size_t count, loff_t
 
 	/* copy data to user */
 	retval = to_cpy - copy_to_user(buf, device_mem + *f_pos, to_cpy);
+	
+	// TODO: flush the file after read
 
 	/* update the file position */
 	*f_pos += retval;
