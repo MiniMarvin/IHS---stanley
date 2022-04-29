@@ -12,9 +12,9 @@
 
 /* driver constants */
 
-#define DRIVER_NAME 	"stanley_pci"
-#define FILE_NAME 	"stanley_pci"
-#define DRIVER_CLASS 	"StanleyModuleClass"
+#define DRIVER_NAME 	"stanley_pci_mock"
+#define FILE_NAME 	"stanley_pci_mock"
+#define DRIVER_CLASS 	"StanleyMockModuleClass"
 #define MY_PCI_VENDOR_ID 0x1172
 #define MY_PCI_DEVICE_ID 0x0004
 
@@ -69,7 +69,7 @@ static struct file_operations fops = {
 /* pci driver operations */
 
 static struct pci_driver pci_ops = {
-	.name = "stanley_pci_altera",
+	.name = "stanley_pci_mock_altera",
 	.id_table = pci_ids,
 	.probe = my_pci_probe,
 	.remove = my_pci_remove
@@ -108,24 +108,24 @@ static int read_name_index = 0;
 
 static int __init my_init(void)
 {
-	printk("stanley_pci: loaded to the kernel\n");
+	printk("stanley_pci_mock: loaded to the kernel\n");
 
 	/* 0. register pci driver to the kernel */
 	if (pci_register_driver(&pci_ops) < 0) {
-		printk("stanley_pci: PCI driver registration failed\n");
+		printk("stanley_pci_mock: PCI driver registration failed\n");
 		return -EAGAIN;
 	}
 
 	/* 1. request the kernel for a device number */
 	if (alloc_chrdev_region(&my_device_nbr, 0, 1, DRIVER_NAME) < 0) {
-		printk("stanley_pci: device number could not be allocated!\n");
+		printk("stanley_pci_mock: device number could not be allocated!\n");
 		return -EAGAIN;
 	}
-	printk("stanley_pci: device number %d was registered!\n", MAJOR(my_device_nbr));
+	printk("stanley_pci_mock: device number %d was registered!\n", MAJOR(my_device_nbr));
 
 	/* 2. create class : appears at /sys/class */
 	if ((my_class = class_create(THIS_MODULE, DRIVER_CLASS)) == NULL) {
-		printk("stanley_pci: device class count not be created!\n");
+		printk("stanley_pci_mock: device class count not be created!\n");
 		goto ClassError;
 	}
 
@@ -134,13 +134,13 @@ static int __init my_init(void)
 
 	/* 4. create the device node */
 	if (device_create(my_class, NULL, my_device_nbr, NULL, FILE_NAME) == NULL) {
-		printk("stanley_pci: can not create device file!\n");
+		printk("stanley_pci_mock: can not create device file!\n");
 		goto FileError;
 	}
 
 	/* 5. now make the device live for the users to access */
 	if (cdev_add(&my_device, my_device_nbr, 1) == -1){
-		printk("stanley_pci: registering of device to kernel failed!\n");
+		printk("stanley_pci_mock: registering of device to kernel failed!\n");
 		goto AddError;
 	}
 
@@ -163,18 +163,18 @@ static void __exit my_exit(void)
 	class_destroy(my_class);
 	unregister_chrdev(my_device_nbr, DRIVER_NAME);
 	pci_unregister_driver(&pci_ops);
-	printk("stanley_pci: goodbye kernel!\n");
+	printk("stanley_pci_mock: goodbye kernel!\n");
 }
 
 static int my_open(struct inode* inode, struct file* filp)
 {
-	printk("stanley_pci: open was called\n");
+	printk("stanley_pci_mock: open was called\n");
 	return 0;
 }
 
 static int my_close(struct inode* inode, struct file* filp)
 {
-	printk("stanley_pci: close was called\n");
+	printk("stanley_pci_mock: close was called\n");
 	return 0;
 }
 
@@ -187,7 +187,7 @@ static ssize_t my_read(struct file* filp, char __user* buf, size_t count, loff_t
 	#ifndef MOCK_DEVICE
 		/* check if the read_pointer pointer is set */
 		if (read_pointer == NULL) {
-			printk("stanley_pci: trying to read to a device region not set yet\n");
+			printk("stanley_pci_mock: trying to read to a device region not set yet\n");
 			return -ECANCELED;
 		}
 	#endif
@@ -199,7 +199,7 @@ static ssize_t my_read(struct file* filp, char __user* buf, size_t count, loff_t
 	#else
 		temp_read = ioread32(read_pointer);
 	#endif
-	printk("stanley_pci: red 0x%X from the %s\n", temp_read, perf_names[read_name_index]);
+	printk("stanley_pci_mock: red 0x%X from the %s\n", temp_read, perf_names[read_name_index]);
 
 	/* get amount of bytes to copy to user */
 	to_cpy = (count <= sizeof(temp_read)) ? count : sizeof(temp_read);
@@ -220,7 +220,7 @@ static ssize_t my_write(struct file* filp, const char __user* buf, size_t count,
 	/* check if the write_pointer pointer is set */
 	#ifndef MOCK_DEVICE
 	if (write_pointer == NULL) {
-		printk("stanley_pci: trying to write to a device region not set yet\n");
+		printk("stanley_pci_mock: trying to write to a device region not set yet\n");
 		return -ECANCELED;
 	}
 	#endif
@@ -247,35 +247,35 @@ static long int my_ioctl(struct file* my_file, unsigned int cmd, unsigned long a
 	case RD_SWITCHES:
 		read_pointer = switches;
 		read_name_index = 0;
-		printk("stanley_pci: set device to: SWITCHES");
+		printk("stanley_pci_mock: set device to: SWITCHES");
 		break;
 	case RD_PBUTTONS:
 		read_pointer = p_buttons;
 		read_name_index = 1;
-		printk("stanley_pci: set device to: BUTTONS");
+		printk("stanley_pci_mock: set device to: BUTTONS");
 		break;
 	case WR_L_DISPLAY:
 		write_pointer = display_l;
 		write_name_index = 2;
-		printk("stanley_pci: set device to: LEFT_DISPLAY");
+		printk("stanley_pci_mock: set device to: LEFT_DISPLAY");
 		break;
 	case WR_R_DISPLAY:
 		write_pointer = display_r;
 		write_name_index = 3;
-		printk("stanley_pci: set device to: RIGHT_DISPLAY");
+		printk("stanley_pci_mock: set device to: RIGHT_DISPLAY");
 		break;
 	case WR_GREEN_LEDS:
 		write_pointer = green_leds;
 		write_name_index = 4;
-		printk("stanley_pci: set device to: GREEN_LEDS");
+		printk("stanley_pci_mock: set device to: GREEN_LEDS");
 		break;
 	case WR_RED_LEDS:
 		write_pointer = red_leds;
 		write_name_index = 5;
-		printk("stanley_pci: set device to: RED_LEDS");
+		printk("stanley_pci_mock: set device to: RED_LEDS");
 		break;
 	default:
-		printk("stanley_pci: unknown ioctl command: 0x%X\n", cmd);
+		printk("stanley_pci_mock: unknown ioctl command: 0x%X\n", cmd);
 	}
 	return 0;
 }
@@ -289,13 +289,13 @@ static int my_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
 	retval = pci_enable_device(dev);
 
 	pci_read_config_byte(dev, PCI_REVISION_ID, &revision);
-	printk("stanley_pci: PCI revision: %d\n", revision);
+	printk("stanley_pci_mock: PCI revision: %d\n", revision);
 
 	pci_read_config_dword(dev, 0, &vendor);
-	printk("stanley_pci: PCI device found. Vendor: 0x%X\n", vendor);
+	printk("stanley_pci_mock: PCI device found. Vendor: 0x%X\n", vendor);
 
 	resource = pci_resource_start(dev, 0);
-	printk("stanley_pci: PCI device resources start at bar 0: 0x%lx\n", resource);
+	printk("stanley_pci_mock: PCI device resources start at bar 0: 0x%lx\n", resource);
 	
 	display_r = ioremap(resource + 0xC000, 0x20);
 	display_l = ioremap(resource + 0xF000, 0x20);
