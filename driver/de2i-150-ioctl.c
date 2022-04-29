@@ -18,6 +18,8 @@
 #define MY_PCI_VENDOR_ID 0x1172
 #define MY_PCI_DEVICE_ID 0x0004
 
+#define MOCK_DEVICE
+
 /* meta information */
 
 MODULE_LICENSE("GPL");
@@ -106,24 +108,24 @@ static int read_name_index = 0;
 
 static int __init my_init(void)
 {
-	printk("my_driver: loaded to the kernel\n");
+	printk("stanley_pci: loaded to the kernel\n");
 
 	/* 0. register pci driver to the kernel */
 	if (pci_register_driver(&pci_ops) < 0) {
-		printk("my_driver: PCI driver registration failed\n");
+		printk("stanley_pci: PCI driver registration failed\n");
 		return -EAGAIN;
 	}
 
 	/* 1. request the kernel for a device number */
 	if (alloc_chrdev_region(&my_device_nbr, 0, 1, DRIVER_NAME) < 0) {
-		printk("my_driver: device number could not be allocated!\n");
+		printk("stanley_pci: device number could not be allocated!\n");
 		return -EAGAIN;
 	}
-	printk("my_driver: device number %d was registered!\n", MAJOR(my_device_nbr));
+	printk("stanley_pci: device number %d was registered!\n", MAJOR(my_device_nbr));
 
 	/* 2. create class : appears at /sys/class */
 	if ((my_class = class_create(THIS_MODULE, DRIVER_CLASS)) == NULL) {
-		printk("my_driver: device class count not be created!\n");
+		printk("stanley_pci: device class count not be created!\n");
 		goto ClassError;
 	}
 
@@ -132,13 +134,13 @@ static int __init my_init(void)
 
 	/* 4. create the device node */
 	if (device_create(my_class, NULL, my_device_nbr, NULL, FILE_NAME) == NULL) {
-		printk("my_driver: can not create device file!\n");
+		printk("stanley_pci: can not create device file!\n");
 		goto FileError;
 	}
 
 	/* 5. now make the device live for the users to access */
 	if (cdev_add(&my_device, my_device_nbr, 1) == -1){
-		printk("my_driver: registering of device to kernel failed!\n");
+		printk("stanley_pci: registering of device to kernel failed!\n");
 		goto AddError;
 	}
 
@@ -161,18 +163,18 @@ static void __exit my_exit(void)
 	class_destroy(my_class);
 	unregister_chrdev(my_device_nbr, DRIVER_NAME);
 	pci_unregister_driver(&pci_ops);
-	printk("my_driver: goodbye kernel!\n");
+	printk("stanley_pci: goodbye kernel!\n");
 }
 
 static int my_open(struct inode* inode, struct file* filp)
 {
-	printk("my_driver: open was called\n");
+	printk("stanley_pci: open was called\n");
 	return 0;
 }
 
 static int my_close(struct inode* inode, struct file* filp)
 {
-	printk("my_driver: close was called\n");
+	printk("stanley_pci: close was called\n");
 	return 0;
 }
 
@@ -184,13 +186,18 @@ static ssize_t my_read(struct file* filp, char __user* buf, size_t count, loff_t
 
 	/* check if the read_pointer pointer is set */
 	if (read_pointer == NULL) {
-		printk("my_driver: trying to read to a device region not set yet\n");
+		printk("stanley_pci: trying to read to a device region not set yet\n");
 		return -ECANCELED;
 	}
 
 	/* read from the device */
-	temp_read = ioread32(read_pointer);
-	printk("my_driver: red 0x%X from the %s\n", temp_read, perf_names[read_name_index]);
+	#ifdef MOCK_DEVICE
+		// TODO: define a read logic for the mock
+		temp_read = 0xf2f2f2f2;
+	#else
+		temp_read = ioread32(read_pointer);
+	#endif
+	printk("stanley_pci: red 0x%X from the %s\n", temp_read, perf_names[read_name_index]);
 
 	/* get amount of bytes to copy to user */
 	to_cpy = (count <= sizeof(temp_read)) ? count : sizeof(temp_read);
@@ -210,7 +217,7 @@ static ssize_t my_write(struct file* filp, const char __user* buf, size_t count,
 
 	/* check if the write_pointer pointer is set */
 	if (write_pointer == NULL) {
-		printk("my_driver: trying to write to a device region not set yet\n");
+		printk("stanley_pci: trying to write to a device region not set yet\n");
 		return -ECANCELED;
 	}
 
@@ -221,7 +228,13 @@ static ssize_t my_write(struct file* filp, const char __user* buf, size_t count,
 	retval = to_cpy - copy_from_user(&temp_write, buf, to_cpy);
 
 	/* send to device */
-	iowrite32(temp_write, write_pointer);
+	#ifdef MOCK_DEVICE
+		// TODO: define a read logic for the mock
+		iowrite32(0xa4a4a4a4, write_pointer);
+	#else
+		iowrite32(temp_write, write_pointer);
+	#endif
+	
 	printk("my_writer: wrote 0x%X to the %s\n", temp_write, perf_names[write_name_index]);
 
 	return retval;
@@ -255,7 +268,7 @@ static long int my_ioctl(struct file* my_file, unsigned int cmd, unsigned long a
 		write_name_index = 5;
 		break;
 	default:
-		printk("my_driver: unknown ioctl command: 0x%X\n", cmd);
+		printk("stanley_pci: unknown ioctl command: 0x%X\n", cmd);
 	}
 	return 0;
 }
@@ -269,13 +282,13 @@ static int my_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
 	retval = pci_enable_device(dev);
 
 	pci_read_config_byte(dev, PCI_REVISION_ID, &revision);
-	printk("my_driver: PCI revision: %d\n", revision);
+	printk("stanley_pci: PCI revision: %d\n", revision);
 
 	pci_read_config_dword(dev, 0, &vendor);
-	printk("my_driver: PCI device found. Vendor: 0x%X\n", vendor);
+	printk("stanley_pci: PCI device found. Vendor: 0x%X\n", vendor);
 
 	resource = pci_resource_start(dev, 0);
-	printk("my_driver: PCI device resources start at bar 0: 0x%lx\n", resource);
+	printk("stanley_pci: PCI device resources start at bar 0: 0x%lx\n", resource);
 	
 	display_r = ioremap(resource + 0xC000, 0x20);
 	display_l = ioremap(resource + 0xF000, 0x20);
