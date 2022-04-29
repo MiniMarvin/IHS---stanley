@@ -184,11 +184,13 @@ static ssize_t my_read(struct file* filp, char __user* buf, size_t count, loff_t
 	int to_cpy = 0;
 	static unsigned int temp_read = 0;
 
-	/* check if the read_pointer pointer is set */
-	if (read_pointer == NULL) {
-		printk("stanley_pci: trying to read to a device region not set yet\n");
-		return -ECANCELED;
-	}
+	#ifndef MOCK_DEVICE
+		/* check if the read_pointer pointer is set */
+		if (read_pointer == NULL) {
+			printk("stanley_pci: trying to read to a device region not set yet\n");
+			return -ECANCELED;
+		}
+	#endif
 
 	/* read from the device */
 	#ifdef MOCK_DEVICE
@@ -216,10 +218,12 @@ static ssize_t my_write(struct file* filp, const char __user* buf, size_t count,
 	static unsigned int temp_write = 0;
 
 	/* check if the write_pointer pointer is set */
+	#ifndef MOCK_DEVICE
 	if (write_pointer == NULL) {
 		printk("stanley_pci: trying to write to a device region not set yet\n");
 		return -ECANCELED;
 	}
+	#endif
 
 	/* get amount of bytes to copy from user */
 	to_cpy = (count <= sizeof(temp_write)) ? count : sizeof(temp_write);
@@ -228,10 +232,7 @@ static ssize_t my_write(struct file* filp, const char __user* buf, size_t count,
 	retval = to_cpy - copy_from_user(&temp_write, buf, to_cpy);
 
 	/* send to device */
-	#ifdef MOCK_DEVICE
-		// TODO: define a read logic for the mock
-		iowrite32(0xa4a4a4a4, write_pointer);
-	#else
+	#ifndef MOCK_DEVICE
 		iowrite32(temp_write, write_pointer);
 	#endif
 	
@@ -246,26 +247,32 @@ static long int my_ioctl(struct file* my_file, unsigned int cmd, unsigned long a
 	case RD_SWITCHES:
 		read_pointer = switches;
 		read_name_index = 0;
+		printk("stanley_pci: set device to: SWITCHES");
 		break;
 	case RD_PBUTTONS:
 		read_pointer = p_buttons;
 		read_name_index = 1;
+		printk("stanley_pci: set device to: BUTTONS");
 		break;
 	case WR_L_DISPLAY:
 		write_pointer = display_l;
 		write_name_index = 2;
+		printk("stanley_pci: set device to: LEFT_DISPLAY");
 		break;
 	case WR_R_DISPLAY:
 		write_pointer = display_r;
 		write_name_index = 3;
+		printk("stanley_pci: set device to: RIGHT_DISPLAY");
 		break;
 	case WR_GREEN_LEDS:
 		write_pointer = green_leds;
 		write_name_index = 4;
+		printk("stanley_pci: set device to: GREEN_LEDS");
 		break;
 	case WR_RED_LEDS:
 		write_pointer = red_leds;
 		write_name_index = 5;
+		printk("stanley_pci: set device to: RED_LEDS");
 		break;
 	default:
 		printk("stanley_pci: unknown ioctl command: 0x%X\n", cmd);

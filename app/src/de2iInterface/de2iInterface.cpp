@@ -113,6 +113,12 @@ unsigned int De2iInterface::readSwitches() {
 	return this->readValue(4, SWITCHES);
 }
 
+bool De2iInterface::readSwitch(int index) {
+	unsigned int switches = readSwitches();
+	bool status = (switches & (1 << index)) != 0;
+	return status;
+}
+
 int De2iInterface::writeGreenLeds(unsigned int data) {
 	int status = this->writeValue(data, GREEN_LEDS);
 	if (status > 0) {
