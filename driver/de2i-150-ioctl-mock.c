@@ -18,7 +18,7 @@
 #define MY_PCI_VENDOR_ID 0x1172
 #define MY_PCI_DEVICE_ID 0x0004
 
-// #define MOCK_DEVICE
+#define MOCK_DEVICE
 
 /* meta information */
 
