@@ -1,8 +1,8 @@
 // when want to use mock just use this directive
-// #define __D2I_INTERFACE_MOCK
-#ifndef __D2I_INTERFACE_MOCK
+// #define __DE2I_INTERFACE_MOCK
+#ifndef __DE2I_INTERFACE_MOCK
 
-#include "d2iInterface.hpp"
+#include "de2iInterface.hpp"
 #include <stdio.h>	/* printf */
 #include <stdlib.h>	/* malloc, atoi, rand... */
 #include <string.h>	/* memcpy, strlen... */
@@ -19,7 +19,7 @@
 
 using namespace std;
 
-D2iInterface::D2iInterface(char* driverPath) {
+De2iInterface::De2iInterface(char* driverPath) {
     int fileDescriptor = 0;
     if ((fileDescriptor = open(driverPath, O_RDWR)) < 0) {
 		throw(DriverException("Error opening driver file"));
@@ -28,9 +28,9 @@ D2iInterface::D2iInterface(char* driverPath) {
 	this->fileDescriptor = fileDescriptor;
 }
 
-D2iInterface::~D2iInterface(){}
+De2iInterface::~De2iInterface(){}
 
-int D2iInterface::writeValue(unsigned int data, D2iDevice device) {
+int De2iInterface::writeValue(unsigned int data, De2iDevice device) {
 	unsigned long operation = 0;
 	if(device == RED_LEDS) {
 		operation = WR_RED_LEDS;
@@ -53,7 +53,7 @@ int D2iInterface::writeValue(unsigned int data, D2iDevice device) {
 	return retval;
 }
 
-unsigned int D2iInterface::readValue(unsigned int bytes, D2iDevice device) {
+unsigned int De2iInterface::readValue(unsigned int bytes, De2iDevice device) {
 	unsigned long operation = 0;
 	if(device == SWITCHES) {
 		operation = RD_SWITCHES;
@@ -71,22 +71,22 @@ unsigned int D2iInterface::readValue(unsigned int bytes, D2iDevice device) {
 	return data;
 }
 
-int D2iInterface::leftDisplayWrite(int num) {
+int De2iInterface::leftDisplayWrite(int num) {
 	unsigned int displayData = this->printDisplayNum(num);
 	return this->writeValue(displayData, DISPLAY_LEFT);
 }
 
-int D2iInterface::rightDisplayWrite(int num) {
+int De2iInterface::rightDisplayWrite(int num) {
 	unsigned int displayData = this->printDisplayNum(num);
 	return this->writeValue(displayData, DISPLAY_RIGHT);
 }
 
-unsigned int D2iInterface::printSingleDisplayNum(int num) {
+unsigned int De2iInterface::printSingleDisplayNum(int num) {
 	if (num < 0 || num > 15) return 0;
 	return this->displayMap[num];
 }
 
-unsigned int D2iInterface::printDisplayNum(int num) {
+unsigned int De2iInterface::printDisplayNum(int num) {
 	int d0 = num%10;
 	int d1 = (num/10)%10;
 	int d2 = (num/100)%10;
@@ -99,21 +99,21 @@ unsigned int D2iInterface::printDisplayNum(int num) {
 	return displayData;
 }
 
-unsigned int D2iInterface::readButtons() {
+unsigned int De2iInterface::readButtons() {
 	return this->readValue(4, PUSH_BUTTONS);
 }
 
-bool D2iInterface::readButton(int index) {
+bool De2iInterface::readButton(int index) {
 	unsigned int buttons = readButtons();
 	bool status = (buttons & (1 << index)) != 0;
 	return status;
 }
 
-unsigned int D2iInterface::readSwitches() {
+unsigned int De2iInterface::readSwitches() {
 	return this->readValue(4, SWITCHES);
 }
 
-int D2iInterface::writeGreenLeds(unsigned int data) {
+int De2iInterface::writeGreenLeds(unsigned int data) {
 	int status = this->writeValue(data, GREEN_LEDS);
 	if (status > 0) {
 		this->greenLedsState = data;
@@ -121,7 +121,7 @@ int D2iInterface::writeGreenLeds(unsigned int data) {
 	return status;
 }
 
-int D2iInterface::writeGreenLed(bool value, int index) {
+int De2iInterface::writeGreenLed(bool value, int index) {
 	unsigned int data = ((this->greenLedsState & (1 << index)) | 
 							(value << index));
 	int status = this->writeValue(data, GREEN_LEDS);
@@ -131,7 +131,7 @@ int D2iInterface::writeGreenLed(bool value, int index) {
 	return status;
 }
 
-int D2iInterface::writeRedLeds(unsigned int data) {
+int De2iInterface::writeRedLeds(unsigned int data) {
 	int status = this->writeValue(data, RED_LEDS);
 	if (status > 0) {
 		this->redLedsState = data;
@@ -139,7 +139,7 @@ int D2iInterface::writeRedLeds(unsigned int data) {
 	return status;
 }
 
-int D2iInterface::writeRedLed(bool value, int index) {
+int De2iInterface::writeRedLed(bool value, int index) {
 	unsigned int data = ((this->redLedsState & (1 << index)) | 
 							(value << index));
 	int status = this->writeValue(data, RED_LEDS);

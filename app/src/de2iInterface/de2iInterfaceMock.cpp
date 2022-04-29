@@ -1,8 +1,8 @@
 // when want to use mock just use this directive
-// #define __D2I_INTERFACE_MOCK
-#ifdef __D2I_INTERFACE_MOCK
+// #define __DE2I_INTERFACE_MOCK
+#ifdef __DE2I_INTERFACE_MOCK
 
-#include "d2iInterface.hpp"
+#include "de2iInterface.hpp"
 #include <stdio.h>	/* printf */
 #include <stdlib.h>	/* malloc, atoi, rand... */
 #include <string.h>	/* memcpy, strlen... */
@@ -18,35 +18,35 @@
 #include "ioctl_cmds.h"
 
 
-D2iInterface::D2iInterface(char* driverPath) {
+De2iInterface::De2iInterface(char* driverPath) {
     cout << "Using Mock Interface" << endl;
 	cout << "Driver file " << driverPath << " loaded..." << endl;
 	this->fileDescriptor = 0;
 }
 
-D2iInterface::~D2iInterface(){}
+De2iInterface::~De2iInterface(){}
 
-int D2iInterface::writeValue(unsigned int data, D2iDevice device) {
+int De2iInterface::writeValue(unsigned int data, De2iDevice device) {
 	return 0;
 }
 
-unsigned int D2iInterface::readValue(unsigned int bytes, D2iDevice device) {
+unsigned int De2iInterface::readValue(unsigned int bytes, De2iDevice device) {
 	return 0;
 }
 
-int D2iInterface::leftDisplayWrite(int num) {
+int De2iInterface::leftDisplayWrite(int num) {
 	return 0;
 }
 
-int D2iInterface::rightDisplayWrite(int num) {
+int De2iInterface::rightDisplayWrite(int num) {
 	return 0;
 }
 
-unsigned int D2iInterface::printSingleDisplayNum(int num) {
+unsigned int De2iInterface::printSingleDisplayNum(int num) {
 	return 0;
 }
 
-unsigned int D2iInterface::printDisplayNum(int num) {
+unsigned int De2iInterface::printDisplayNum(int num) {
 	return 0;
 }
 

@@ -10,7 +10,7 @@
 #include <errno.h>	/* error codes */
 #include <iostream>
 
-#include "../d2iInterface/d2iInterface.hpp"
+#include "../de2iInterface/de2iInterface.hpp"
 
 using namespace std;
 
@@ -18,7 +18,7 @@ int echoLoop(char* driverPath) {
     cout << endl;
     cout << "Entering echo loop..." <<endl;
     
-    D2iInterface interface = D2iInterface(driverPath);
+    De2iInterface interface = De2iInterface(driverPath);
 // 	interface.readValue
 	
 	return 0;

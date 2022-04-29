@@ -1,9 +1,9 @@
-#ifndef __D2I_INTERFACE
-#define __D2I_INTERFACE
+#ifndef __DE2I_INTERFACE
+#define __DE2I_INTERFACE
 
 #include <stdint.h>	/* uints types */
 
-enum D2iDevice {
+enum De2iDevice {
     RED_LEDS,
     GREEN_LEDS,
     SWITCHES,
@@ -12,7 +12,7 @@ enum D2iDevice {
     DISPLAY_LEFT
 };
 
-class D2iInterface {
+class De2iInterface {
 private:
     const int displayMap[16] = {0xC0, 0xF9, 0xA4, 0xB0, 
         0x99, 0x92, 0x82, 0xF8, 0x80, 0x90, 0x88, 
@@ -23,11 +23,11 @@ private:
     unsigned int printSingleDisplayNum(int num);
     unsigned int printDisplayNum(int num);
 public:
-    D2iInterface(char* driverPath);
-    ~D2iInterface();
+    De2iInterface(char* driverPath);
+    ~De2iInterface();
     
-    int writeValue(unsigned int data, D2iDevice device);
-    unsigned int readValue(unsigned int bytes, D2iDevice device);
+    int writeValue(unsigned int data, De2iDevice device);
+    unsigned int readValue(unsigned int bytes, De2iDevice device);
     
     int leftDisplayWrite(int num);
     int rightDisplayWrite(int num);

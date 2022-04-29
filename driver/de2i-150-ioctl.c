@@ -69,7 +69,7 @@ static struct file_operations fops = {
 /* pci driver operations */
 
 static struct pci_driver pci_ops = {
-	.name = "alterahello",
+	.name = "stanley_pci_altera",
 	.id_table = pci_ids,
 	.probe = my_pci_probe,
 	.remove = my_pci_remove
