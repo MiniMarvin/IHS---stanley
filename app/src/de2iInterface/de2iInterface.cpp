@@ -91,9 +91,9 @@ unsigned int De2iInterface::printDisplayNum(int num) {
 	int d1 = (num/10)%10;
 	int d2 = (num/100)%10;
 	
-	unsigned int displayData0 = this->printDisplayNum(d0);
-	unsigned int displayData1 = this->printDisplayNum(d1);
-	unsigned int displayData2 = this->printDisplayNum(d2);
+	unsigned int displayData0 = this->printSingleDisplayNum(d0);
+	unsigned int displayData1 = this->printSingleDisplayNum(d1);
+	unsigned int displayData2 = this->printSingleDisplayNum(d2);
 	unsigned int displayData = ((displayData2 << 16) |
 		(displayData1 << 8) | displayData0);
 	return displayData;
