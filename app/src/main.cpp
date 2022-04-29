@@ -24,9 +24,12 @@ void configDriverPath(int, char**);
 int configGameLoop(int, char**);
 
 int main(int argc, char** argv) {
+	cout << "Init software..." << endl;
+	cout << "Configure game..." << endl;
 	int config = configGame(argc, argv);
 	int loop = 0;
 	if (config == ECHO_LOOP) {
+		cout << "Using echo loop" << endl;
 		loop = echoLoop(driverPath);
 	} else {
 		// add game loop
@@ -45,9 +48,11 @@ int configGame(int argc, char** argv) {
 
 void configDriverPath(int argc, char** argv) {
 	if (argc >= 2) {
+		cout << "Using custom file" << argv[1] << endl;
+		driverPath = (char*) malloc(1000);
 		strcpy(driverPath, argv[1]);
 	}
-	cout << "Loading driver path: " << driverPath << endl;
+	cout << "Loaded driver file: " << driverPath << endl;
 }
 
 int configGameLoop(int argc, char** argv) {

@@ -1,3 +1,5 @@
+// when want to use mock just use this directive
+// #define __D2I_INTERFACE_MOCK
 #ifdef __D2I_INTERFACE_MOCK
 
 #include "d2iInterface.hpp"
