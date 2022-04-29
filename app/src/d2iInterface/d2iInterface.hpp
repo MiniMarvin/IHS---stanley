@@ -18,6 +18,8 @@ private:
         0x99, 0x92, 0x82, 0xF8, 0x80, 0x90, 0x88, 
         0x83, 0xC6, 0xA1, 0x86, 0x8E};
     int fileDescriptor;
+    unsigned int greenLedsState = 0;
+    unsigned int redLedsState = 0;
     unsigned int printSingleDisplayNum(int num);
     unsigned int printDisplayNum(int num);
 public:
@@ -36,9 +38,9 @@ public:
     unsigned int readSwitches();
     bool readSwitch(int index);
     
-    int writeGreenLeds(unsigned int bits);
+    int writeGreenLeds(unsigned int data);
     int writeGreenLed(bool value, int index);
-    int writeRedLeds(unsigned int bits);
+    int writeRedLeds(unsigned int data);
     int writeRedLed(bool value, int index);
 };
 

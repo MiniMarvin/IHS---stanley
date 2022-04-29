@@ -99,4 +99,54 @@ unsigned int D2iInterface::printDisplayNum(int num) {
 	return displayData;
 }
 
+unsigned int D2iInterface::readButtons() {
+	return this->readValue(4, PUSH_BUTTONS);
+}
+
+bool D2iInterface::readButton(int index) {
+	unsigned int buttons = readButtons();
+	bool status = (buttons & (1 << index)) != 0;
+	return status;
+}
+
+unsigned int D2iInterface::readSwitches() {
+	return this->readValue(4, SWITCHES);
+}
+
+int D2iInterface::writeGreenLeds(unsigned int data) {
+	int status = this->writeValue(data, GREEN_LEDS);
+	if (status > 0) {
+		this->greenLedsState = data;
+	}
+	return status;
+}
+
+int D2iInterface::writeGreenLed(bool value, int index) {
+	unsigned int data = ((this->greenLedsState & (1 << index)) | 
+							(value << index));
+	int status = this->writeValue(data, GREEN_LEDS);
+	if (status > 0) {
+		this->greenLedsState = data;
+	}
+	return status;
+}
+
+int D2iInterface::writeRedLeds(unsigned int data) {
+	int status = this->writeValue(data, RED_LEDS);
+	if (status > 0) {
+		this->redLedsState = data;
+	}
+	return status;
+}
+
+int D2iInterface::writeRedLed(bool value, int index) {
+	unsigned int data = ((this->redLedsState & (1 << index)) | 
+							(value << index));
+	int status = this->writeValue(data, RED_LEDS);
+	if (status > 0) {
+		this->redLedsState = data;
+	}
+	return status;
+}
+
 #endif
