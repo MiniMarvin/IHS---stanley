@@ -12,16 +12,18 @@
 
 /* driver constants */
 
-#define DRIVER_NAME 	"my_driver"
-#define FILE_NAME 	"mydev"
-#define DRIVER_CLASS 	"MyModuleClass"
+#define DRIVER_NAME 	"stanley_pci"
+#define FILE_NAME 	"stanley_pci"
+#define DRIVER_CLASS 	"StanleyModuleClass"
 #define MY_PCI_VENDOR_ID 0x1172
 #define MY_PCI_DEVICE_ID 0x0004
+
+// #define MOCK_DEVICE
 
 /* meta information */
 
 MODULE_LICENSE("GPL");
-MODULE_AUTHOR("mfbsouza");
+MODULE_AUTHOR("mfbsouza;cmg");
 MODULE_DESCRIPTION("simple pci driver for DE2i-150 dev board");
 
 /* lkm entry and exit points */
@@ -67,7 +69,7 @@ static struct file_operations fops = {
 /* pci driver operations */
 
 static struct pci_driver pci_ops = {
-	.name = "alterahello",
+	.name = "stanley_pci_altera",
 	.id_table = pci_ids,
 	.probe = my_pci_probe,
 	.remove = my_pci_remove
@@ -85,6 +87,8 @@ static void* display_r = NULL;
 static void* display_l = NULL;
 static void* switches = NULL;
 static void* p_buttons = NULL;
+static void* green_leds = NULL;
+static void* red_leds = NULL;
 
 static void* read_pointer = NULL;
 static void* write_pointer = NULL;
@@ -104,24 +108,24 @@ static int read_name_index = 0;
 
 static int __init my_init(void)
 {
-	printk("my_driver: loaded to the kernel\n");
+	printk("stanley_pci: loaded to the kernel\n");
 
 	/* 0. register pci driver to the kernel */
 	if (pci_register_driver(&pci_ops) < 0) {
-		printk("my_driver: PCI driver registration failed\n");
+		printk("stanley_pci: PCI driver registration failed\n");
 		return -EAGAIN;
 	}
 
 	/* 1. request the kernel for a device number */
 	if (alloc_chrdev_region(&my_device_nbr, 0, 1, DRIVER_NAME) < 0) {
-		printk("my_driver: device number could not be allocated!\n");
+		printk("stanley_pci: device number could not be allocated!\n");
 		return -EAGAIN;
 	}
-	printk("my_driver: device number %d was registered!\n", MAJOR(my_device_nbr));
+	printk("stanley_pci: device number %d was registered!\n", MAJOR(my_device_nbr));
 
 	/* 2. create class : appears at /sys/class */
 	if ((my_class = class_create(THIS_MODULE, DRIVER_CLASS)) == NULL) {
-		printk("my_driver: device class count not be created!\n");
+		printk("stanley_pci: device class count not be created!\n");
 		goto ClassError;
 	}
 
@@ -130,13 +134,13 @@ static int __init my_init(void)
 
 	/* 4. create the device node */
 	if (device_create(my_class, NULL, my_device_nbr, NULL, FILE_NAME) == NULL) {
-		printk("my_driver: can not create device file!\n");
+		printk("stanley_pci: can not create device file!\n");
 		goto FileError;
 	}
 
 	/* 5. now make the device live for the users to access */
 	if (cdev_add(&my_device, my_device_nbr, 1) == -1){
-		printk("my_driver: registering of device to kernel failed!\n");
+		printk("stanley_pci: registering of device to kernel failed!\n");
 		goto AddError;
 	}
 
@@ -159,18 +163,18 @@ static void __exit my_exit(void)
 	class_destroy(my_class);
 	unregister_chrdev(my_device_nbr, DRIVER_NAME);
 	pci_unregister_driver(&pci_ops);
-	printk("my_driver: goodbye kernel!\n");
+	printk("stanley_pci: goodbye kernel!\n");
 }
 
 static int my_open(struct inode* inode, struct file* filp)
 {
-	printk("my_driver: open was called\n");
+	printk("stanley_pci: open was called\n");
 	return 0;
 }
 
 static int my_close(struct inode* inode, struct file* filp)
 {
-	printk("my_driver: close was called\n");
+	printk("stanley_pci: close was called\n");
 	return 0;
 }
 
@@ -180,15 +184,22 @@ static ssize_t my_read(struct file* filp, char __user* buf, size_t count, loff_t
 	int to_cpy = 0;
 	static unsigned int temp_read = 0;
 
-	/* check if the read_pointer pointer is set */
-	if (read_pointer == NULL) {
-		printk("my_driver: trying to read to a device region not set yet\n");
-		return -ECANCELED;
-	}
+	#ifndef MOCK_DEVICE
+		/* check if the read_pointer pointer is set */
+		if (read_pointer == NULL) {
+			printk("stanley_pci: trying to read to a device region not set yet\n");
+			return -ECANCELED;
+		}
+	#endif
 
 	/* read from the device */
-	temp_read = ioread32(read_pointer);
-	printk("my_driver: red 0x%X from the %s\n", temp_read, perf_names[read_name_index]);
+	#ifdef MOCK_DEVICE
+		// TODO: define a read logic for the mock
+		temp_read = 0xf2f2f2f2;
+	#else
+		temp_read = ioread32(read_pointer);
+	#endif
+	printk("stanley_pci: red 0x%X from the %s\n", temp_read, perf_names[read_name_index]);
 
 	/* get amount of bytes to copy to user */
 	to_cpy = (count <= sizeof(temp_read)) ? count : sizeof(temp_read);
@@ -201,15 +212,18 @@ static ssize_t my_read(struct file* filp, char __user* buf, size_t count, loff_t
 
 static ssize_t my_write(struct file* filp, const char __user* buf, size_t count, loff_t* f_pos)
 {
+	// TODO: define the write protocol for the file
 	ssize_t retval = 0;
 	int to_cpy = 0;
 	static unsigned int temp_write = 0;
 
 	/* check if the write_pointer pointer is set */
+	#ifndef MOCK_DEVICE
 	if (write_pointer == NULL) {
-		printk("my_driver: trying to write to a device region not set yet\n");
+		printk("stanley_pci: trying to write to a device region not set yet\n");
 		return -ECANCELED;
 	}
+	#endif
 
 	/* get amount of bytes to copy from user */
 	to_cpy = (count <= sizeof(temp_write)) ? count : sizeof(temp_write);
@@ -218,7 +232,10 @@ static ssize_t my_write(struct file* filp, const char __user* buf, size_t count,
 	retval = to_cpy - copy_from_user(&temp_write, buf, to_cpy);
 
 	/* send to device */
-	iowrite32(temp_write, write_pointer);
+	#ifndef MOCK_DEVICE
+		iowrite32(temp_write, write_pointer);
+	#endif
+	
 	printk("my_writer: wrote 0x%X to the %s\n", temp_write, perf_names[write_name_index]);
 
 	return retval;
@@ -230,21 +247,35 @@ static long int my_ioctl(struct file* my_file, unsigned int cmd, unsigned long a
 	case RD_SWITCHES:
 		read_pointer = switches;
 		read_name_index = 0;
+		printk("stanley_pci: set device to: SWITCHES");
 		break;
 	case RD_PBUTTONS:
 		read_pointer = p_buttons;
 		read_name_index = 1;
+		printk("stanley_pci: set device to: BUTTONS");
 		break;
 	case WR_L_DISPLAY:
 		write_pointer = display_l;
-		write_name_index = 2 + 0;
+		write_name_index = 2;
+		printk("stanley_pci: set device to: LEFT_DISPLAY");
 		break;
 	case WR_R_DISPLAY:
 		write_pointer = display_r;
-		write_name_index = 2 + 1;
+		write_name_index = 3;
+		printk("stanley_pci: set device to: RIGHT_DISPLAY");
+		break;
+	case WR_GREEN_LEDS:
+		write_pointer = green_leds;
+		write_name_index = 4;
+		printk("stanley_pci: set device to: GREEN_LEDS");
+		break;
+	case WR_RED_LEDS:
+		write_pointer = red_leds;
+		write_name_index = 5;
+		printk("stanley_pci: set device to: RED_LEDS");
 		break;
 	default:
-		printk("my_driver: unknown ioctl command: 0x%X\n", cmd);
+		printk("stanley_pci: unknown ioctl command: 0x%X\n", cmd);
 	}
 	return 0;
 }
@@ -258,18 +289,20 @@ static int my_pci_probe(struct pci_dev *dev, const struct pci_device_id *id)
 	retval = pci_enable_device(dev);
 
 	pci_read_config_byte(dev, PCI_REVISION_ID, &revision);
-	printk("my_driver: PCI revision: %d\n", revision);
+	printk("stanley_pci: PCI revision: %d\n", revision);
 
 	pci_read_config_dword(dev, 0, &vendor);
-	printk("my_driver: PCI device found. Vendor: 0x%X\n", vendor);
+	printk("stanley_pci: PCI device found. Vendor: 0x%X\n", vendor);
 
 	resource = pci_resource_start(dev, 0);
-	printk("my_driver: PCI device resources start at bar 0: 0x%lx\n", resource);
+	printk("stanley_pci: PCI device resources start at bar 0: 0x%lx\n", resource);
 	
 	display_r = ioremap(resource + 0xC000, 0x20);
-	display_l = ioremap(resource + 0xC140, 0x20);
-	switches = ioremap(resource + 0xC040, 0x20);
-	p_buttons = ioremap(resource + 0xC080, 0x20);
+	display_l = ioremap(resource + 0xF000, 0x20);
+	switches = ioremap(resource + 0xC020, 0x20);
+	p_buttons = ioremap(resource + 0xF300, 0x20);
+	green_leds = ioremap(resource + 0xF100, 0x20);
+	red_leds = ioremap(resource + 0xF200, 0x20);
 
 	read_pointer = switches; // default read peripheral pointer
 	write_pointer = display_r; // default write peripheral pointer
@@ -286,5 +319,7 @@ static void my_pci_remove(struct pci_dev *dev)
 	iounmap(display_l);
 	iounmap(switches);
 	iounmap(p_buttons);
+	iounmap(red_leds);
+	iounmap(green_leds);
 	pci_disable_device(dev);
 }
