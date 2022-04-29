@@ -22,21 +22,13 @@ int echoLoop(char* driverPath) {
     De2iInterface interface = De2iInterface(driverPath);
     
     while(1) {
-        cout << "Reading switches..." << endl;
         unsigned int switches = interface.readSwitches();
-        cout << "Did read the hex value: " << hex << switches << endl;
-        bitset<8> binarySwitches(switches);
-        cout << "Did read the bin value: " << binarySwitches << endl;
-        
-        interface.writeRedLeds(switches);
-    
-        cout << "Reading buttons..." << endl;
         unsigned int buttons = interface.readButtons();
-        cout << "Did read the hex value: " << hex << buttons << endl;
-        bitset<8> binaryButtos(buttons);
-        cout << "Did read the bin value: " << binaryButtos << endl;
-        
-        interface.writeGreenLeds(buttons);
+        interface.leftDisplayWrite(switches/1000);
+        interface.rightDisplayWrite(switches%1000);
+        interface.writeRedLeds(switches);
+        interface.writeGreenLeds((buttons & 0b1111) ^ 0b1111);
+        usleep(100000);
     }
     
 	return 0;
