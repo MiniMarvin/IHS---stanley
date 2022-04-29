@@ -15,6 +15,9 @@ using namespace std;
 int echoLoop(char* driverPath) {
     cout << endl;
     cout << "Entering echo loop..." <<endl;
+    
+//     D2iInterface interface = D2iInterface(driverPath);
+// 	interface.readValue
 	
 	return 0;
 }

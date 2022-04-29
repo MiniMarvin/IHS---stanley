@@ -1,3 +1,5 @@
+#ifndef __D2I_INTERFACE_MOCK
+
 #include "d2iInterface.hpp"
 #include <stdio.h>	/* printf */
 #include <stdlib.h>	/* malloc, atoi, rand... */
@@ -18,7 +20,6 @@ using namespace std;
 D2iInterface::D2iInterface(char* driverPath) {
     int fileDescriptor = 0;
     if ((fileDescriptor = open(driverPath, O_RDWR)) < 0) {
-// 		fprintf(stderr, "Error opening file %s\n", driverPath);
 		throw(DriverException("Error opening driver file"));
 	}
 	cout << "Driver file " << driverPath << " loaded..." << endl;
@@ -95,3 +96,5 @@ unsigned int D2iInterface::printDisplayNum(int num) {
 		(displayData1 << 8) | displayData0);
 	return displayData;
 }
+
+#endif
