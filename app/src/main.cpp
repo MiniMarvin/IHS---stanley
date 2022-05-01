@@ -11,6 +11,7 @@
 
 #include "ioctl_cmds.h"
 #include "./echoLoop/echo.hpp"
+#include "./gameLoop/game.hpp"
 
 #define GAME_LOOP 0
 #define ECHO_LOOP 1
@@ -32,7 +33,8 @@ int main(int argc, char** argv) {
 		cout << "Using echo loop" << endl;
 		loop = echoLoop(driverPath);
 	} else {
-		// add game loop
+		cout << "Using game loop" << endl;
+		loop = gameLoop(driverPath);
 	}
 	
 	if (loop != 0) {

@@ -24,8 +24,8 @@ int echoLoop(char* driverPath) {
     while(1) {
         unsigned int switches = interface.readSwitches();
         unsigned int buttons = interface.readButtons();
-        interface.leftDisplayWrite(switches/1000);
-        interface.rightDisplayWrite(switches%1000);
+        interface.leftDisplayWrite(switches/10000);
+        interface.rightDisplayWrite(switches%10000);
         interface.writeRedLeds(switches);
         interface.writeGreenLeds((buttons & 0b1111) ^ 0b1111);
         usleep(100000);
