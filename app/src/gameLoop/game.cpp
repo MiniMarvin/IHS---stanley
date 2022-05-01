@@ -16,6 +16,8 @@
 
 using namespace std;
 
+int TOTAL_POINTS = 0;
+
 void printArray(vector<int> array) {
     cout << "Posições para ligar LEDs: ";
     
@@ -86,6 +88,20 @@ bool checkIfPositionOfButtonIsEquivalentOfGreenLight(int positionOfButtonClicked
     return false;
 }
 
+void showPoints(De2iInterface interface) {
+    interface.leftDisplayWrite(TOTAL_POINTS/10000);
+    interface.rightDisplayWrite(TOTAL_POINTS%10000);
+}
+
+void updatePoints(De2iInterface interface) {
+    TOTAL_POINTS++;
+    showPoints(interface);
+}
+void resetPoints(De2iInterface interface) {
+    TOTAL_POINTS = 0;
+    showPoints(interface);
+}
+
 int gameLoop(char* driverPath) {
     cout << endl;
     cout << "Iniciando jogo..." <<endl;
@@ -94,6 +110,8 @@ int gameLoop(char* driverPath) {
     
     // Primeira fase: acende aleatoriamente cinco valores de leds verde e compara com os botões apertados
     first_level:
+        resetPoints(interface);
+
         int QTD_LEDS = 5;
         vector<int> orderToLightUp = getOrderOfGreenLeds(QTD_LEDS);
         lightUpGreenLightFromVector(orderToLightUp, interface);
@@ -118,12 +136,16 @@ int gameLoop(char* driverPath) {
                 }
                 
                 LED_INDEX++;
+                updatePoints(interface);
+                
             } else {
                 // Se apertar um botão errado, acende todos os botões e retorna para a primeira fase
                 interface.writeGreenLeds(0b11111111);
                 
                 sleep(1);
                 cout << "Erroou :( Voltando para o primeiro nível" << endl;
+                
+                resetPoints(interface);
                 goto first_level;
             }
             
