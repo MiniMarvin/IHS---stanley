@@ -13,8 +13,8 @@ INCDIR   := ./app/include
 PREFIX :=
 CC     := $(PREFIX)gcc
 AS     := $(PREFIX)nasm
-CXX    := $(PREFIX)g++
-LD     := $(PREFIX)g++
+CXX    := $(PREFIX)g++ -fopenmp
+LD     := $(PREFIX)g++ -fopenmp
 OD     := $(PREFIX)objdump
 
 # flags
