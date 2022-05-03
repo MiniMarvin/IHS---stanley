@@ -40,25 +40,26 @@ int gameLoop(char* driverPath) {
     
     configOmp(2);
     
-    #pragma omp parallel default(none) shared(periferics, interface, phase) sections
-    {
-        while (1) {
-            auto startTime = std::chrono::high_resolution_clock::now();
-            
-            // Here we define the OpenMP to split the operation of the game and the rendering of frames
-            // Every function SHOULD NOT BE BLOCKING
-            // Any activity that is time related may be updated wihtin another function that counts the values in a shared memory region
-            
-            // #pragma omp task
-            
-            #pragma omp sections
-            {
-                phase = gameOperation(phase, interface, periferics);
+    #pragma omp parallel sections num_threads(2) default(none) shared(periferics, interface, phase)
+{
+        // Here we define the OpenMP to split the operation of the game and the rendering of frames
+        // Every function SHOULD NOT BE BLOCKING
+        // Any activity that is time related may be updated wihtin another function that counts the values in a shared memory region
+        
+        // #pragma omp task
+        
+        #pragma omp section
+        {
+            while (1) {
+                phase = gameOperation(phase, interface, periferics);    
             }
-            
-            // Each pragma should run in parallel
-            #pragma omp sections
-            {
+        }
+        
+        // Each pragma should run in parallel
+        #pragma omp section
+        {
+            while(1) {
+                auto startTime = std::chrono::high_resolution_clock::now();
                 updatePeriferals(periferics, interface, startTime);    
             }
         }
