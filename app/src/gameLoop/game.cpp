@@ -195,7 +195,7 @@ void lightUpGreenLightFromVector(vector<int> array, De2iInterface interface) {
 int isPowerOfTwo(unsigned n) {
     int idx = 0;
     for (; n > 0; idx++) {
-        n >> 1;
+        n >>= 1;
     }
     
     return !(idx ^ (1 << idx));
