@@ -95,7 +95,7 @@ bool runGreenLedsAndPushButtonsGameAndCheckIfWin(int roundCount, De2iInterface i
     
     cout << "Esperando botões..." << endl;
     unsigned int LED_INDEX = 0;
-    unsigned int prevValue = 0;
+    unsigned int prevValue = 15;
     
     // TODO: add time 
     // Loop para esperar interações do usuário
