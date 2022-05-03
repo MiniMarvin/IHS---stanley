@@ -73,7 +73,7 @@ GamePhase gameOperation(GamePhase phase, De2iInterface interface) {
             // Primeira fase: acende aleatoriamente 5 valores de leds verde e compara com os botões apertados
             bool win = runGreenLedsAndPushButtonsGameAndCheckIfWin(5, interface);
             if(win) newPhase = SwitchPhase;
-            else newPhase = IntroPhase;
+            else newPhase = EndgamePhase;
             break;
         }
         case SwitchPhase: {
