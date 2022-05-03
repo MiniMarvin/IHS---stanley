@@ -116,7 +116,7 @@ bool runGreenLedsAndPushButtonsGameAndCheckIfWin(int roundCount, De2iInterface i
         pair<int, int> ledsToLightUp = translateButtonToGreenLed(positionOfButtonClicked);
         
         // Se a posição for igual a esperada
-        if(checkIfPositionOfButtonIsEquivalentOfGreenLight(ledsToLightUp, orderToLightUp[LED_INDEX])) {
+        if(checkIfPositionOfButtonIsEquivalentOfGreenLight(positionOfButtonClicked, orderToLightUp[LED_INDEX])) {
             lightUpAndLightDownGreenLed(ledsToLightUp, interface);
             
             // Se a posição for a última, vai para a próxima fase
@@ -214,14 +214,8 @@ int findPosition(unsigned n) {
 // --------------------------------------------------------------------------------
 // Como são 8 leds e 4 botões, vamos considerar que as leds 0 e 1 são equivalentes ao botão 0, 
 // a led 2 e 3 são equivalentes ao botão 2 e assim por diante
-bool checkIfPositionOfButtonIsEquivalentOfGreenLight(pair<int, int> positionsOsLedsTranslated, int positionOfGreenLight) {
-    cout << "Posição dos LEDs referentes ao botão clicado: " << positionsOsLedsTranslated.first << " " << positionsOsLedsTranslated.second << endl;
-    cout << "Posição da LED piscado: " << positionOfGreenLight << endl;
-    
-    if(positionsOsLedsTranslated.first == positionOfGreenLight || positionsOsLedsTranslated.second == positionOfGreenLight)
-        return true;
-    
-    return false;
+bool checkIfPositionOfButtonIsEquivalentOfGreenLight(int buttonIndex, int positionOfGreenLight) {
+    return buttonIndex == positionOfGreenLight;
 }
 
 void showPoints(De2iInterface interface) {

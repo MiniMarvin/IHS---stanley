@@ -32,7 +32,7 @@ vector<int> getOrderOfGreenLeds(int count);
 pair<int, int> translateButtonToGreenLed(int position);
 void lightUpAndLightDownGreenLed(pair<int, int> positions, De2iInterface interface);
 void lightUpGreenLightFromVector(vector<int> array, De2iInterface interface);
-bool checkIfPositionOfButtonIsEquivalentOfGreenLight(pair<int, int> positionsOsLedsTranslated, int positionOfGreenLight);
+bool checkIfPositionOfButtonIsEquivalentOfGreenLight(int buttonIndex, int positionOfGreenLight);
 void showPoints(De2iInterface interface);
 void updatePoints(De2iInterface interface);
 void resetPoints(De2iInterface interface);
