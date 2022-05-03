@@ -200,21 +200,15 @@ int isPowerOfTwo(unsigned n) {
 // TODO: mudar isso para suportar instruções do x86 e quem sabe usar a diretiva de asm? 👀 
 // tem uma lib pra isso em __builtin_clzll, acho que é a <limits>
 int findPosition(unsigned n) {
-    if (!isPowerOfTwo(n)) {
-        n = ~n;
-        if (!isPowerOfTwo(n)) {
-            return -1;
+    n = ~n;
+    int idx = -1;
+    for (int i = 0; i < 4; i++) {
+        if (n & (1 << i)) {
+            if (idx != -1) return -1;
+            else idx = i;
         }
     }
-    
-    unsigned i = 1, pos = 0;
-
-    while (!(i & n)) {
-        i = i << 1;
-        ++pos;
-    }
- 
-    return pos;
+    return idx;
 }
 
 // --------------------------------------------------------------------------------
