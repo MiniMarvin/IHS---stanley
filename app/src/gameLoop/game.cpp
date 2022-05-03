@@ -14,6 +14,7 @@
 #include <tuple>
 #include <omp.h>
 #include <chrono>
+#include <random.h>
 
 #include "../de2iInterface/de2iInterface.hpp"
 #include "game.hpp"
@@ -33,6 +34,8 @@ int TOTAL_POINTS = 0;
 int gameLoop(char* driverPath) {
     cout << endl;
     cout << "Iniciando jogo..." <<endl;
+    
+    srand(time(0));
     
     De2iInterface interface = De2iInterface(driverPath);
     GamePhase phase = ButtonPhase;
@@ -104,7 +107,6 @@ bool runGreenLedsAndPushButtonsGameAndCheckIfWin(int roundCount, De2iInterface i
         unsigned int buttons = interface.readButtons();
         cout << "Valor lido: " << buttons << endl;
         if (buttons == prevValue || buttons == 15) {
-            cout << "ignoring because of selected values"<< endl;
             continue;
         }
         prevValue = buttons;
