@@ -206,14 +206,16 @@ pair<int, int> translateButtonToGreenLed(int position) {
 
 void lightUpAndLightDownGreenLed(pair<int, int> positions, PerifericValues periferics) {
     cout << "Acendendo LED Verde na posição " << positions.first  << " e " << positions.second << endl;
-    periferics.setGreenLed(0, positions.first);
-    periferics.setGreenLed(0, positions.second);
+    periferics.setGreenLed(1, positions.first);
+    periferics.setGreenLed(1, positions.second);
 
     sleep(1);
     
     cout << "Apagando LED Verde na posição " << positions.first  << " e " << positions.second << endl;
-    periferics.setGreenLed(1, positions.first);
-    periferics.setGreenLed(1, positions.second);
+    periferics.setGreenLed(0, positions.first);
+    periferics.setGreenLed(0, positions.second);
+    
+    sleep(1);
 }
 
 void lightUpGreenLightFromVector(vector<int> array, PerifericValues periferics) {
