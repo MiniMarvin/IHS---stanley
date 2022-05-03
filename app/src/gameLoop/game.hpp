@@ -26,6 +26,7 @@ int gameLoop(char*);
 GamePhase gameOperation(GamePhase phase, De2iInterface interface);
 bool runGreenLedsAndPushButtonsGameAndCheckIfWin(int numberOfLeds, De2iInterface interface);
 bool runRedLedsAndSwitchesAndCheckIfWin(De2iInterface interface);
+GamePhase switchPhase(int wordSize, int seconds, De2iInterface interface);
 
 // Game Utils
 vector<int> getOrderOfGreenLeds(int count);
@@ -37,6 +38,7 @@ void showPoints(De2iInterface interface);
 void updatePoints(De2iInterface interface);
 void resetPoints(De2iInterface interface);
 GamePhase lostGame(De2iInterface interface);
+void IntroPhaseImpl(De2iInterface interface);
 
 // General utils
 int isPowerOfTwo(unsigned n);

@@ -66,19 +66,20 @@ GamePhase gameOperation(GamePhase phase, De2iInterface interface) {
     
     switch (phase) {
         case IntroPhase: {
-            break;
+            IntroPhaseImpl(interface);
         }
         case ButtonPhase: {
             // TODO: fazer essas fases serem incrementais e o jogo ser no mínimo um jogo infinito
             // Primeira fase: acende aleatoriamente 5 valores de leds verde e compara com os botões apertados
+            // TODO: add progress
             bool win = runGreenLedsAndPushButtonsGameAndCheckIfWin(5, interface);
             if(win) newPhase = SwitchPhase;
             else newPhase = EndgamePhase;
             break;
         }
         case SwitchPhase: {
-            //bool win = runRedLedAndTurnSwitchGameAndCheckIfWin(10, interface);
-            //if(win) newPhase = EndgamePhase;
+            int wordSize = 8, seconds = 5;
+            newPhase = switchPhase(wordSize, seconds, interface);
             break;
         }
         case EndgamePhase: {
@@ -90,6 +91,26 @@ GamePhase gameOperation(GamePhase phase, De2iInterface interface) {
     return newPhase;
 }
 
+void IntroPhaseImpl(De2iInterface interface) {
+    for(int i = 17; i >= 0; i--) {
+        interface.writeRedLed(1, i);
+        usleep(200);
+        interface.writeRedLed(0, i);
+        usleep(100);
+    }
+    
+    for(int i = 8; i >= 0; i--) {
+        interface.writeGreenLed(1, i);
+        usleep(200);
+        interface.writeGreenLed(0, i);
+        usleep(100);
+    }
+    
+    interface.writeRedLeds(0xfffffffffffffffffu);
+    interface.writeGreenLeds(0xffffffffu);
+    
+    usleep(500);
+}
 
 bool runGreenLedsAndPushButtonsGameAndCheckIfWin(int roundCount, De2iInterface interface) {
     cout << "iniciando operação de LEDs" << endl;
@@ -146,7 +167,6 @@ vector<int> getOrderOfGreenLeds(int count) {
     }
 
     printArray(orderToLightUp);
-    
     return orderToLightUp;
 }
 
@@ -220,7 +240,7 @@ bool checkIfPositionOfButtonIsEquivalentOfGreenLight(int buttonIndex, int positi
 }
 
 void showPoints(De2iInterface interface) {
-    interface.leftDisplayWrite(TOTAL_POINTS/10000);
+    // interface.leftDisplayWrite(TOTAL_POINTS/10000);
     interface.rightDisplayWrite(TOTAL_POINTS%10000);
 }
 
@@ -246,4 +266,44 @@ GamePhase lostGame(De2iInterface interface) {
     sleep(1);
     cout << "Errou :( Voltando para o primeiro nível" << endl;
     return IntroPhase;
+}
+
+unsigned int getMask(int wordSize) {
+    unsigned int mask = 0u;
+    for (int i = 0; i < wordSize; i++) {
+        mask <<= 1;
+        mask |= 1;
+    }
+    return mask;
+}
+
+unsigned int getRedLedsWord(int wordSize) {
+    unsigned int mask = getMask(wordSize);
+    return mask & random();
+}
+
+GamePhase switchPhase(int wordSize, int seconds, De2iInterface interface) {
+    unsigned int word = getRedLedsWord(wordSize);
+    unsigned int mask = getMask(wordSize);
+    Timer timer = Timer();
+    timer.init(seconds);
+    GamePhase newPhase = EndgamePhase;
+    
+    while (1) {
+        auto switches = interface.readSwitches() & mask;
+        auto seconds = timer.missingSeconds();
+        seconds *= 100;
+        interface.leftDisplayWrite(seconds);
+        
+        if (switches == word) {
+            newPhase = ButtonPhase;
+            updatePoints(interface);
+            break;
+        }
+        if (timer.didFinish()) {
+            break;
+        }
+    }
+    
+    return newPhase;
 }
