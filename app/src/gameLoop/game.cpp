@@ -193,20 +193,19 @@ void lightUpGreenLightFromVector(vector<int> array, De2iInterface interface) {
 
 // popcnt == 1 é uma opção também
 int isPowerOfTwo(unsigned n) {
-    int idx = 0;
-    for (; n > 0; idx++) {
-        n >>= 1;
-    }
-    
-    return !(idx ^ (1 << idx));
+    return n && (!(n & (n - 1)));
 }
 
 // Encontra a posição do único bit setado em 1; se houve mais de um bit em 1, retorna -1
 // TODO: mudar isso para suportar instruções do x86 e quem sabe usar a diretiva de asm? 👀 
 // tem uma lib pra isso em __builtin_clzll, acho que é a <limits>
 int findPosition(unsigned n) {
-    if (!isPowerOfTwo(n))
-        return -1;
+    if (!isPowerOfTwo(n)) {
+        n = ~n;
+        if (!isPowerOfTwo(n)) {
+            return -1;
+        }
+    }
     
     unsigned i = 1, pos = 0;
 
