@@ -36,59 +36,13 @@ int gameLoop(char* driverPath) {
     
     De2iInterface interface = De2iInterface(driverPath);
     GamePhase phase = ButtonPhase;
-    PerifericValues periferics;
     
-    configOmp(2);
-    
-    #pragma omp parallel sections num_threads(2) default(none) shared(periferics, interface, phase)
-{
-        // Here we define the OpenMP to split the operation of the game and the rendering of frames
-        // Every function SHOULD NOT BE BLOCKING
-        // Any activity that is time related may be updated wihtin another function that counts the values in a shared memory region
-        
-        // #pragma omp task
-        
-        #pragma omp section
-        {
-            while (1) {
-                phase = gameOperation(phase, interface, periferics);    
-            }
-        }
-        
-        // Each pragma should run in parallel
-        #pragma omp section
-        {
-            while(1) {
-                auto startTime = std::chrono::high_resolution_clock::now();
-                updatePeriferals(periferics, interface, startTime);    
-            }
-        }
+    // TODO: add openMP to split in threads use SECTIONS
+    while (1) {
+        phase = gameOperation(phase, interface);
     }
     
 	return 0;
-}
-
-
-// ============================================================
-// Utility Functions
-// ============================================================
-void configOmp(int threadCount) {
-    omp_set_dynamic(0);
-    omp_set_num_threads(threadCount);
-}
-
-// ============================================================
-// Operational Fragments
-// ============================================================
-void updatePeriferals(PerifericValues& periferics, De2iInterface interface, TimePoint startTime) {
-    long long elapsedTime = getElapsedTime(startTime);
-    long long missingTime = max(0ll, USECONDS_60_FPS - elapsedTime);
-    usleep(missingTime);
-    interface.rightDisplayWrite(periferics.getDisplayRight());
-    interface.leftDisplayWrite(periferics.getDisplayLeft());
-    interface.writeGreenLeds(periferics.getGreenLeds());
-    interface.writeRedLeds(periferics.getRedLeds());
-    cout << "Writing leds: " << bitset<8>(periferics.getGreenLeds()) << endl;
 }
 
 // ===========================================================
@@ -104,7 +58,7 @@ void updatePeriferals(PerifericValues& periferics, De2iInterface interface, Time
 // -----------------------------------------------------------
 // OBS: Essa thread não deveria escrever diretamente na interface e sim ler dela, quem deveria escrever é a outra thread
 // que vai atualizar a tela a 60 FPS.
-GamePhase gameOperation(GamePhase phase, De2iInterface interface, PerifericValues& periferics) {
+GamePhase gameOperation(GamePhase phase, De2iInterface interface) {
     GamePhase newPhase = phase;
     
     switch (phase) {
@@ -114,7 +68,7 @@ GamePhase gameOperation(GamePhase phase, De2iInterface interface, PerifericValue
         case ButtonPhase: {
             // TODO: fazer essas fases serem incrementais e o jogo ser no mínimo um jogo infinito
             // Primeira fase: acende aleatoriamente 5 valores de leds verde e compara com os botões apertados
-            bool win = runGreenLedsAndPushButtonsGameAndCheckIfWin(5, interface, periferics);
+            bool win = runGreenLedsAndPushButtonsGameAndCheckIfWin(5, interface);
             if(win) newPhase = SwitchPhase;
             else newPhase = IntroPhase;
             break;
@@ -125,7 +79,7 @@ GamePhase gameOperation(GamePhase phase, De2iInterface interface, PerifericValue
             break;
         }
         case EndgamePhase: {
-            newPhase = lostGame(periferics);
+            newPhase = lostGame(interface);
             break;
         }
     }
@@ -134,10 +88,10 @@ GamePhase gameOperation(GamePhase phase, De2iInterface interface, PerifericValue
 }
 
 
-bool runGreenLedsAndPushButtonsGameAndCheckIfWin(int roundCount, De2iInterface interface, PerifericValues periferics) {
+bool runGreenLedsAndPushButtonsGameAndCheckIfWin(int roundCount, De2iInterface interface) {
     cout << "iniciando operação de LEDs" << endl;
     vector<int> orderToLightUp = getOrderOfGreenLeds(roundCount);
-    lightUpGreenLightFromVector(orderToLightUp, periferics);
+    lightUpGreenLightFromVector(orderToLightUp, interface);
     
     cout << "Esperando botões..." << endl;
     unsigned int LED_INDEX = 0;
@@ -162,7 +116,7 @@ bool runGreenLedsAndPushButtonsGameAndCheckIfWin(int roundCount, De2iInterface i
         
         // Se a posição for igual a esperada
         if(checkIfPositionOfButtonIsEquivalentOfGreenLight(ledsToLightUp, orderToLightUp[LED_INDEX])) {
-            lightUpAndLightDownGreenLed(ledsToLightUp, periferics);
+            lightUpAndLightDownGreenLed(ledsToLightUp, interface);
             
             // Se a posição for a última, vai para a próxima fase
             if(LED_INDEX == orderToLightUp.size() - 1) {
@@ -171,7 +125,7 @@ bool runGreenLedsAndPushButtonsGameAndCheckIfWin(int roundCount, De2iInterface i
             }
             
             LED_INDEX++;
-            updatePoints(periferics);
+            updatePoints(interface);
         } else {
             return false;
         }
@@ -215,24 +169,24 @@ pair<int, int> translateButtonToGreenLed(int position) {
     return make_pair(firstLed, secondLed);
 }
 
-void lightUpAndLightDownGreenLed(pair<int, int> positions, PerifericValues periferics) {
+void lightUpAndLightDownGreenLed(pair<int, int> positions, De2iInterface interface) {
     cout << "Acendendo LED Verde na posição " << positions.first  << " e " << positions.second << endl;
-    periferics.setGreenLed(1, positions.first);
-    periferics.setGreenLed(1, positions.second);
+    interface.writeGreenLed(1, positions.first);
+    interface.writeGreenLed(1, positions.second);
 
     sleep(1);
     
     cout << "Apagando LED Verde na posição " << positions.first  << " e " << positions.second << endl;
-    periferics.setGreenLed(0, positions.first);
-    periferics.setGreenLed(0, positions.second);
+    interface.writeGreenLed(0, positions.first);
+    interface.writeGreenLed(0, positions.second);
     
     sleep(1);
 }
 
-void lightUpGreenLightFromVector(vector<int> array, PerifericValues periferics) {
+void lightUpGreenLightFromVector(vector<int> array, De2iInterface interface) {
     for(unsigned int i = 0; i < array.size(); i++){
         pair<int, int> ledsToLightUp = translateButtonToGreenLed(array[i]);
-        lightUpAndLightDownGreenLed(ledsToLightUp, periferics);
+        lightUpAndLightDownGreenLed(ledsToLightUp, interface);
     }
 }
 
@@ -272,29 +226,29 @@ bool checkIfPositionOfButtonIsEquivalentOfGreenLight(pair<int, int> positionsOsL
     return false;
 }
 
-void showPoints(PerifericValues periferics) {
-    periferics.setDisplayLeft(TOTAL_POINTS/10000);
-    periferics.setDisplayRight(TOTAL_POINTS%10000);
+void showPoints(De2iInterface interface) {
+    interface.leftDisplayWrite(TOTAL_POINTS/10000);
+    interface.rightDisplayWrite(TOTAL_POINTS%10000);
 }
 
-void updatePoints(PerifericValues periferics) {
+void updatePoints(De2iInterface interface) {
     TOTAL_POINTS++;
-    showPoints(periferics);
+    showPoints(interface);
 }
 
-void resetPoints(PerifericValues periferics) {
+void resetPoints(De2iInterface interface) {
     TOTAL_POINTS = 0;
-    showPoints(periferics);
+    showPoints(interface);
 }
 
 bool runRedLedsAndSwitchesAndCheckIfWin(De2iInterface interface) {
     return false;
 }
 
-GamePhase lostGame(PerifericValues& periferics) {
+GamePhase lostGame(De2iInterface interface) {
     // Se apertar um botão errado, acende todos os leds e retorna para a primeira fase
-    periferics.setGreenLeds(0xffffffffu);
-    periferics.setGreenLeds(0xffffffffu);
+    interface.writeGreenLeds(0xffffffffu);
+    interface.writeGreenLeds(0xffffffffu);
     
     sleep(1);
     cout << "Errou :( Voltando para o primeiro nível" << endl;

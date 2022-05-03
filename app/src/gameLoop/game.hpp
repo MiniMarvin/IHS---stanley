@@ -23,21 +23,20 @@ enum GamePhase {
 
 // Game Management
 int gameLoop(char*);
-GamePhase gameOperation(GamePhase phase, De2iInterface interface, PerifericValues& periferics);
-bool runGreenLedsAndPushButtonsGameAndCheckIfWin(int numberOfLeds, De2iInterface interface, PerifericValues periferics);
+GamePhase gameOperation(GamePhase phase, De2iInterface interface);
+bool runGreenLedsAndPushButtonsGameAndCheckIfWin(int numberOfLeds, De2iInterface interface);
 bool runRedLedsAndSwitchesAndCheckIfWin(De2iInterface interface);
-void updatePeriferals(PerifericValues& periferics, De2iInterface interface, TimePoint startTime);
 
 // Game Utils
 vector<int> getOrderOfGreenLeds(int count);
 pair<int, int> translateButtonToGreenLed(int position);
-void lightUpAndLightDownGreenLed(pair<int, int> positions, PerifericValues periferics);
-void lightUpGreenLightFromVector(vector<int> array, PerifericValues periferics);
+void lightUpAndLightDownGreenLed(pair<int, int> positions, De2iInterface interface);
+void lightUpGreenLightFromVector(vector<int> array, De2iInterface interface);
 bool checkIfPositionOfButtonIsEquivalentOfGreenLight(pair<int, int> positionsOsLedsTranslated, int positionOfGreenLight);
-void showPoints(PerifericValues periferics);
-void updatePoints(PerifericValues periferics);
-void resetPoints(PerifericValues periferics);
-GamePhase lostGame(PerifericValues& periferics);
+void showPoints(De2iInterface interface);
+void updatePoints(De2iInterface interface);
+void resetPoints(De2iInterface interface);
+GamePhase lostGame(De2iInterface interface);
 
 // General utils
 int isPowerOfTwo(unsigned n);
