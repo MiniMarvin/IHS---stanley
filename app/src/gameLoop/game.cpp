@@ -190,6 +190,7 @@ void lightUpGreenLightFromVector(vector<int> array, De2iInterface interface) {
     for(unsigned int i = 0; i < array.size(); i++){
         pair<int, int> ledsToLightUp = translateButtonToGreenLed(array[i]);
         lightUpAndLightDownGreenLed(ledsToLightUp, interface);
+        sleep(1);
     }
 }
 
