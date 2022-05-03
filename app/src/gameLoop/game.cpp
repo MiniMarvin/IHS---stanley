@@ -68,6 +68,8 @@ GamePhase gameOperation(GamePhase phase, De2iInterface interface) {
         case IntroPhase: {
             cout << "IntroPhase" << endl;
             IntroPhaseImpl(interface);
+            newPhase = SwitchPhase;
+            break;
         }
         case ButtonPhase: {
             cout << "ButtonPhase" << endl;
