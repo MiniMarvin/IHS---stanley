@@ -36,17 +36,38 @@ public:
     }
     
     void setRedLed(bool bit, int index) {
-        unsigned int mask = bit ? bit << index : ~(bit << index);
-        #pragma omp atomic
-        redLeds = redLeds & mask;
+        cout << "Update bit to " << bit << " at index " << index << endl;
+        unsigned int mask;
+        
+        if (bit) {
+            mask = ~(bit << index);
+            #pragma omp atomic
+            redLeds = redLeds & mask;    
+        } else {
+            mask = bit << index;
+            #pragma omp atomic
+            redLeds = redLeds | mask;    
+        }
+        
+        cout << "mask: " << mask << endl;
+        cout << "greenLeds: " << redLeds << endl;
     }
     
     void setGreenLed(bool bit, int index) {
         cout << "Update bit to " << bit << " at index " << index << endl;
-        unsigned int mask = bit ? bit << index : ~(bit << index);
+        unsigned int mask;
+        
+        if (bit) {
+            mask = ~(bit << index);
+            #pragma omp atomic
+            greenLeds = greenLeds & mask;    
+        } else {
+            mask = bit << index;
+            #pragma omp atomic
+            greenLeds = greenLeds | mask;    
+        }
+        
         cout << "mask: " << mask << endl;
-        #pragma omp atomic
-        greenLeds = greenLeds & mask;
         cout << "greenLeds: " << greenLeds << endl;
     }
     
