@@ -134,8 +134,16 @@ int De2iInterface::writeGreenLeds(unsigned int data) {
 }
 
 int De2iInterface::writeGreenLed(bool value, int index) {
-	unsigned int data = ((this->greenLedsState & (1 << index)) | 
-							(value << index));
+	unsigned int data = this->greenLedsState;
+	unsigned int mask;
+	if (value) {
+		mask = 1 << index;
+		data |= mask;
+	} else {
+		mask = ~(1u << index);
+		data &= mask;
+	}
+	
 	int status = this->writeValue(data, GREEN_LEDS);
 	if (status > 0) {
 		this->greenLedsState = data;
@@ -152,8 +160,16 @@ int De2iInterface::writeRedLeds(unsigned int data) {
 }
 
 int De2iInterface::writeRedLed(bool value, int index) {
-	unsigned int data = ((this->redLedsState & (1 << index)) | 
-							(value << index));
+	unsigned int data = this->redLedsState;
+	unsigned int mask;
+	if (value) {
+		mask = 1 << index;
+		data |= mask;
+	} else {
+		mask = ~(1u << index);
+		data &= mask;
+	}
+	
 	int status = this->writeValue(data, RED_LEDS);
 	if (status > 0) {
 		this->redLedsState = data;
