@@ -291,7 +291,7 @@ GamePhase switchPhase(int wordSize, int seconds, De2iInterface interface) {
     Timer timer = Timer();
     timer.init(seconds);
     GamePhase newPhase = EndgamePhase;
-    cout << "binary word: " << bitset<>(word) << endl;
+    cout << "binary word: " << (bitset<18>(word)) << endl;
     
     while (1) {
         auto switches = interface.readSwitches() & mask;
