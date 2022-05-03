@@ -51,12 +51,16 @@ int gameLoop(char* driverPath) {
             
             // #pragma omp task
             
-            #pragma omp task
-            phase = gameOperation(phase, interface, periferics);
+            #pragma omp section 
+            {
+                phase = gameOperation(phase, interface, periferics);
+            }
             
             // Each pragma should run in parallel
-            #pragma omp task
-            updatePeriferals(periferics, interface, startTime);
+            #pragma omp section
+            {
+                updatePeriferals(periferics, interface, startTime);    
+            }
         }
     }
     
@@ -76,6 +80,7 @@ void configOmp(int threadCount) {
 // Operational Fragments
 // ============================================================
 void updatePeriferals(PerifericValues& periferics, De2iInterface interface, TimePoint startTime) {
+    cout << "update periferics" << endl;
     long long elapsedTime = getElapsedTime(startTime);
     long long missingTime = max(0ll, USECONDS_60_FPS - elapsedTime);
     usleep(missingTime);
@@ -129,6 +134,7 @@ GamePhase gameOperation(GamePhase phase, De2iInterface interface, PerifericValue
 
 
 bool runGreenLedsAndPushButtonsGameAndCheckIfWin(int roundCount, De2iInterface interface, PerifericValues periferics) {
+    cout << "iniciando operação de LEDs" << endl;
     vector<int> orderToLightUp = getOrderOfGreenLeds(roundCount);
     lightUpGreenLightFromVector(orderToLightUp, periferics);
     
