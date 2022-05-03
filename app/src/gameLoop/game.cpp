@@ -107,6 +107,7 @@ bool runGreenLedsAndPushButtonsGameAndCheckIfWin(int roundCount, De2iInterface i
             cout << "ignoring because of selected values"<< endl;
             continue;
         }
+        prevValue = buttons;
         
         // Pega a posição do botão apertado; retorna -1 se nenhum ou mais de um forem apertados ao mesmo tempo.
         int positionOfButtonClicked = findPosition(buttons);
