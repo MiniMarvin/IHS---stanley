@@ -119,7 +119,7 @@ GamePhase gameOperation(GamePhase phase, De2iInterface interface, PerifericValue
             break;
         }
         case EndgamePhase: {
-            //lostGame();
+            phase = lostGame();
             break;
         }
     }
@@ -291,4 +291,5 @@ void lostGame(PerifericValues& periferics, Timer& timer) {
     
     sleep(1);
     cout << "Errou :( Voltando para o primeiro nível" << endl;
+    return IntroPhase;
 }
