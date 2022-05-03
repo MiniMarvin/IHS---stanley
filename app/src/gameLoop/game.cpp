@@ -184,8 +184,6 @@ void lightUpAndLightDownGreenLed(pair<int, int> positions, De2iInterface interfa
     cout << "Apagando LED Verde na posição " << positions.first  << " e " << positions.second << endl;
     interface.writeGreenLed(0, positions.first);
     interface.writeGreenLed(0, positions.second);
-    
-    sleep(1);
 }
 
 void lightUpGreenLightFromVector(vector<int> array, De2iInterface interface) {
