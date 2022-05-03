@@ -308,6 +308,12 @@ GamePhase lostGame(De2iInterface interface) {
     interface.writeGreenLeds(0x0);
     
     cout << "Errou :( Voltando para o primeiro nível" << endl;
+    
+    TOTAL_POINTS = 0;
+    BUTTON_SEQUENCE_SIZE = 1;
+    SWITCH_WORD_SIZE = 8;
+    SWITCH_SECONDS_COUNT = 10;
+    
     return IntroPhase;
 }
 
