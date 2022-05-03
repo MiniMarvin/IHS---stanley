@@ -106,9 +106,10 @@ bool runGreenLedsAndPushButtonsGameAndCheckIfWin(int roundCount, De2iInterface i
         // TODO: handle line up and line down
         unsigned int buttons = interface.readButtons();
         if (buttons == prevValue || buttons == 15) {
+            prevValue = buttons;
             continue;
         }
-        prevValue = buttons;
+        
         cout << "Valor lido: " << buttons << endl;
         
         // Pega a posição do botão apertado; retorna -1 se nenhum ou mais de um forem apertados ao mesmo tempo.
