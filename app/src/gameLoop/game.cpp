@@ -16,56 +16,16 @@
 #include <chrono>
 
 #include "../de2iInterface/de2iInterface.hpp"
+#include "game.hpp"
+#include "timer/timer.hpp"
 
 using namespace std;
 
 // ============================================================
 // Types & Enums
 // ============================================================
-#define USECONDS_60_FPS 16667
-
-enum GamePhase {
-    IntroPhase,
-    ButtonPhase,
-    SwitchPhase,
-    EndgamePhase
-};
-
-typedef struct PerifericValues {
-    unsigned int displayLeft;
-    unsigned int displayRight;
-    unsigned int redLeds;
-    unsigned int greenLeds;
-    PerifericValues(): displayLeft(0), displayRight(0), redLeds(0), greenLeds(0) {}
-} PerifericValues;
-
-typedef std::chrono::time_point<std::chrono::high_resolution_clock> TimePoint;
-
+const int BUTTON_COUNT = 4;
 int TOTAL_POINTS = 0;
-
-// ============================================================
-// Function Headers
-// ============================================================
-void printArray(vector<int> array);
-vector<int> getOrderOfGreenLeds(int count);
-pair<int, int> translateButtonToGreenLed(int position);
-void lightUpAndLightDownGreenLed(pair<int, int> positions, De2iInterface interface);
-void lightUpGreenLightFromVector(vector<int> array, De2iInterface interface);
-int isPowerOfTwo(unsigned n);
-int findPosition(unsigned n);
-bool checkIfPositionOfButtonIsEquivalentOfGreenLight(pair<int, int> positionsOsLedsTranslated, int positionOfGreenLight);
-void showPoints(De2iInterface interface);
-void updatePoints(De2iInterface interface);
-void resetPoints(De2iInterface interface);
-bool runGreenLedsAndPushButtonsGameAndCheckIfWin(int numberOfLeds, De2iInterface interface);
-bool runRedLedsAndSwitchesAndCheckIfWin(De2iInterface interface);
-PerifericValues getPeriferics();
-void configOmp(int threadCount);
-std::chrono::time_point<std::chrono::high_resolution_clock> getCurrentTime();
-long long getElapsedTime(TimePoint start);
-void updatePeriferals(PerifericValues periferics, De2iInterface interface, TimePoint startTime);
-GamePhase gameOperation(GamePhase phase, De2iInterface interface);
-
 
 // ============================================================
 // Game Loop
@@ -77,9 +37,10 @@ int gameLoop(char* driverPath) {
     De2iInterface interface = De2iInterface(driverPath);
     GamePhase phase = ButtonPhase;
     PerifericValues periferics;
+    
     configOmp(2);
     
-    #pragma omp parallel default(none) private(startTime) shared(periferics, interface, phase)
+    #pragma omp parallel default(none) shared(periferics, interface, phase)
     {
         while (1) {
             auto startTime = std::chrono::high_resolution_clock::now();
@@ -88,12 +49,14 @@ int gameLoop(char* driverPath) {
             // Every function SHOULD NOT BE BLOCKING
             // Any activity that is time related may be updated wihtin another function that counts the values in a shared memory region
             
+            #pragma omp task
+            
+            #pragma omp task
+            phase = gameOperation(phase, interface, periferics);
+            
             // Each pragma should run in parallel
             #pragma omp task
             updatePeriferals(periferics, interface, startTime);
-            
-            #pragma omp task
-            phase = gameOperation(phase, interface);
         }
     }
     
@@ -109,27 +72,17 @@ void configOmp(int threadCount) {
     omp_set_num_threads(threadCount);
 }
 
-inline TimePoint getCurrentTime() {
-    return std::chrono::high_resolution_clock::now();
-}
-
-long long getElapsedTime(TimePoint start) {
-    auto elapsed = getCurrentTime() - start;
-    unsigned long long microseconds = std::chrono::duration_cast<std::chrono::microseconds>(elapsed).count();
-    return microseconds;
-}
-
-
 // ============================================================
 // Operational Fragments
 // ============================================================
-void updatePeriferals(PerifericValues periferics, De2iInterface interface, TimePoint startTime) {
-    
-    interface.rightDisplayWrite(periferics.displayRight)
-    interface.leftDisplayWrite(periferics.displayLeft)
+void updatePeriferals(PerifericValues& periferics, De2iInterface interface, TimePoint startTime) {
     long long elapsedTime = getElapsedTime(startTime);
     long long missingTime = max(0ll, USECONDS_60_FPS - elapsedTime);
     usleep(missingTime);
+    interface.rightDisplayWrite(periferics.displayRight);
+    interface.leftDisplayWrite(periferics.displayLeft);
+    interface.writeGreenLeds(periferics.greenLeds);
+    interface.writeRedLeds(periferics.redLeds);
 }
 
 // ===========================================================
@@ -145,7 +98,7 @@ void updatePeriferals(PerifericValues periferics, De2iInterface interface, TimeP
 // -----------------------------------------------------------
 // OBS: Essa thread não deveria escrever diretamente na interface e sim ler dela, quem deveria escrever é a outra thread
 // que vai atualizar a tela a 60 FPS.
-GamePhase gameOperation(GamePhase phase, De2iInterface interface) {
+GamePhase gameOperation(GamePhase phase, De2iInterface interface, PerifericValues& periferics) {
     GamePhase newPhase = phase;
     
     switch (phase) {
@@ -226,11 +179,11 @@ bool runGreenLedsAndPushButtonsGameAndCheckIfWin(int roundCount, De2iInterface i
 //     return false;
 // }
 
-vector<int> getOrderOfGreenLeds(int count, int ledCount) {
+vector<int> getOrderOfGreenLeds(int count) {
     vector<int> orderToLightUp;
     
     for(int i = 0; i < count; i++) {
-        int value = rand()%ledCount; // 4 positions (0 to 3)
+        int value = rand()%4; // 4 positions (0 to 3)
         orderToLightUp.push_back(value);
     }
 
