@@ -32,14 +32,14 @@ public:
         this->greenLeds = value;
     }
     
-    void setRedLed(int value, int index) {
-        unsigned int mask = ~((unsigned int) value << index);
+    void setRedLed(bool bit, int index) {
+        unsigned int mask = bit << index;
         #pragma omp atomic
         redLeds = redLeds & mask;
     }
     
-    void setGreenLed(int value, int index) {
-        unsigned int mask = ~((unsigned int) value << index);
+    void setGreenLed(bool bit, int index) {
+        unsigned int mask = bit << index;
         #pragma omp atomic
         greenLeds = greenLeds & mask;
     }
