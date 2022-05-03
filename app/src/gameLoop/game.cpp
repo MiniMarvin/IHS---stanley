@@ -49,7 +49,7 @@ int gameLoop(char* driverPath) {
             // Every function SHOULD NOT BE BLOCKING
             // Any activity that is time related may be updated wihtin another function that counts the values in a shared memory region
             
-            #pragma omp task
+            // #pragma omp task
             
             #pragma omp task
             phase = gameOperation(phase, interface, periferics);
@@ -87,7 +87,7 @@ void updatePeriferals(PerifericValues& periferics, De2iInterface interface, Time
 
 // ===========================================================
 // Dividir as fases de maneira incremental, o jogo vai ser basicamente dividido em algumas partes:
-// 1. Inicio: Exibe uma tela de loading, pode ser qualquer coisa,como um shift de LED vermelho até a pessoa
+// 1. Inicio: Exibe uma tela de loading, pode ser qualquer coisa, como um shift de LED vermelho até a pessoa
 // apertar start e dar inicio ao programa
 // 2. Fase Botão: Vai Iniciar o Jogo exibindo para o usuário a sequência de botões para apertar
 // 3. Fase Botão Entrada: Vai receber do usuário um input para poder comparar com o que o usuário digitou
@@ -108,20 +108,18 @@ GamePhase gameOperation(GamePhase phase, De2iInterface interface, PerifericValue
         case ButtonPhase: {
             // TODO: fazer essas fases serem incrementais e o jogo ser no mínimo um jogo infinito
             // Primeira fase: acende aleatoriamente 5 valores de leds verde e compara com os botões apertados
-            bool win = runGreenLedsAndPushButtonsGameAndCheckIfWin(5, interface);
+            bool win = runGreenLedsAndPushButtonsGameAndCheckIfWin(5, interface, periferics);
             if(win) newPhase = SwitchPhase;
+            else newPhase = IntroPhase;
             break;
         }
         case SwitchPhase: {
-            // bool win = runGreenLedAndTurnSwitchGameAndCheckIfWin(10, interface);
-            // if(win){
-            //      newPhase = EndgamePhase;
-            // } else {
-            //      newPhase = EndgamePhase;
-            // }
+            //bool win = runRedLedAndTurnSwitchGameAndCheckIfWin(10, interface);
+            //if(win) newPhase = EndgamePhase;
             break;
         }
         case EndgamePhase: {
+            //lostGame();
             break;
         }
     }
@@ -129,15 +127,20 @@ GamePhase gameOperation(GamePhase phase, De2iInterface interface, PerifericValue
     return newPhase;
 }
 
-bool runGreenLedsAndPushButtonsGameAndCheckIfWin(int roundCount, De2iInterface interface) {
+
+bool runGreenLedsAndPushButtonsGameAndCheckIfWin(int roundCount, De2iInterface interface, PerifericValues periferics) {
     vector<int> orderToLightUp = getOrderOfGreenLeds(roundCount);
-    lightUpGreenLightFromVector(orderToLightUp, interface);
+    lightUpGreenLightFromVector(orderToLightUp, periferics);
     
     cout << "Esperando botões..." << endl;
     unsigned int LED_INDEX = 0;
+    
+    // TODO: add time 
     // Loop para esperar interações do usuário
     while(1) {
+        // TODO: handle line up and line down
         unsigned int buttons = interface.readButtons();
+        if (buttons == 0) continue;
         cout << "Valor lido: " << buttons << endl;
         
         // Pega a posição do botão apertado; retorna -1 se nenhum ou mais de um forem apertados ao mesmo tempo.
@@ -148,7 +151,7 @@ bool runGreenLedsAndPushButtonsGameAndCheckIfWin(int roundCount, De2iInterface i
         
         // Se a posição for igual a esperada
         if(checkIfPositionOfButtonIsEquivalentOfGreenLight(ledsToLightUp, orderToLightUp[LED_INDEX])) {
-            lightUpAndLightDownGreenLed(ledsToLightUp, interface);
+            lightUpAndLightDownGreenLed(ledsToLightUp, periferics);
             
             // Se a posição for a última, vai para a próxima fase
             if(LED_INDEX == orderToLightUp.size() - 1) {
@@ -157,27 +160,14 @@ bool runGreenLedsAndPushButtonsGameAndCheckIfWin(int roundCount, De2iInterface i
             }
             
             LED_INDEX++;
-            updatePoints(interface);
-            
+            updatePoints(periferics);
         } else {
-            // Se apertar um botão errado, acende todos os leds e retorna para a primeira fase
-            interface.writeGreenLeds(0b11111111);
-            interface.writeGreenLeds(0b11111111);
-            
-            sleep(1);
-            cout << "Errou :( Voltando para o primeiro nível" << endl;
-            
             return false;
         }
         
         sleep(1);
     }
 }
-
-// bool runGreenLedAndTurnSwitchGameAndCheckIfWin(int roundCount, De2iInterface interface) {
-//     cout << "switch phase" << endl;
-//     return false;
-// }
 
 vector<int> getOrderOfGreenLeds(int count) {
     vector<int> orderToLightUp;
@@ -235,6 +225,7 @@ void lightUpGreenLightFromVector(vector<int> array, PerifericValues periferics) 
 
 // popcnt == 1 é uma opção também
 int isPowerOfTwo(unsigned n) {
+    
     return n && (!(n & (n - 1)));
 }
 
@@ -255,10 +246,6 @@ int findPosition(unsigned n) {
     return pos;
 }
 
-// ===============================================================================
-// TODO: Uma opção melhor é a gente usar só 4 dos LEDs, é melhor pra usabilidade 
-// e não confunde o jogador, não precisamos utilizar todos os periféricos, 
-// é tranquilo pular alguns.
 // --------------------------------------------------------------------------------
 // Como são 8 leds e 4 botões, vamos considerar que as leds 0 e 1 são equivalentes ao botão 0, 
 // a led 2 e 3 são equivalentes ao botão 2 e assim por diante
@@ -272,21 +259,30 @@ bool checkIfPositionOfButtonIsEquivalentOfGreenLight(pair<int, int> positionsOsL
     return false;
 }
 
-void showPoints(De2iInterface interface) {
-    interface.leftDisplayWrite(TOTAL_POINTS/10000);
-    interface.rightDisplayWrite(TOTAL_POINTS%10000);
+void showPoints(PerifericValues periferics) {
+    periferics.setDisplayLeft(TOTAL_POINTS/10000);
+    periferics.setDisplayRight(TOTAL_POINTS%10000);
 }
 
-void updatePoints(De2iInterface interface) {
+void updatePoints(PerifericValues periferics) {
     TOTAL_POINTS++;
-    showPoints(interface);
+    showPoints(periferics);
 }
 
-void resetPoints(De2iInterface interface) {
+void resetPoints(PerifericValues periferics) {
     TOTAL_POINTS = 0;
-    showPoints(interface);
+    showPoints(periferics);
 }
 
 bool runRedLedsAndSwitchesAndCheckIfWin(De2iInterface interface) {
     return false;
+}
+
+void lostGame(PerifericValues& periferics, Timer& timer) {
+    // Se apertar um botão errado, acende todos os leds e retorna para a primeira fase
+    periferics.setGreenLeds(0xffffffffu);
+    periferics.setGreenLeds(0xffffffffu);
+    
+    sleep(1);
+    cout << "Errou :( Voltando para o primeiro nível" << endl;
 }

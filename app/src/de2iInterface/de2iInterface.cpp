@@ -106,7 +106,7 @@ unsigned int De2iInterface::printDisplayNum(int num) {
 }
 
 unsigned int De2iInterface::readButtons() {
-	return this->readValue(4, PUSH_BUTTONS);
+	return (0xff & ~this->readValue(4, PUSH_BUTTONS));
 }
 
 bool De2iInterface::readButton(int index) {

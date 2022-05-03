@@ -46,7 +46,7 @@ bool Timer::didFinish() {
 }
 
 void Timer::lock() {
-    #pragma omp critical time_lock
+    #pragma omp critical (time_lock)
     {
         this->isLocked = true;
         auto current = getCurrentTime();
@@ -57,7 +57,7 @@ void Timer::lock() {
 }
 
 void Timer::unlock() {
-    #pragma omp critical time_lock
+    #pragma omp critical (time_lock)
     {
         this->start = getCurrentTime();
         this->isLocked = false;
