@@ -134,8 +134,6 @@ bool runGreenLedsAndPushButtonsGameAndCheckIfWin(int roundCount, De2iInterface i
             cout << "deu ruim" << endl;
             return false;
         }
-        
-        sleep(1);
     }
 }
 
