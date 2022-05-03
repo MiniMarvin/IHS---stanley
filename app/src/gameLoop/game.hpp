@@ -37,7 +37,7 @@ bool checkIfPositionOfButtonIsEquivalentOfGreenLight(pair<int, int> positionsOsL
 void showPoints(PerifericValues periferics);
 void updatePoints(PerifericValues periferics);
 void resetPoints(PerifericValues periferics);
-void lostGame(PerifericValues& periferics, Timer& timer);
+GamePhase lostGame(PerifericValues& periferics);
 
 // General utils
 int isPowerOfTwo(unsigned n);

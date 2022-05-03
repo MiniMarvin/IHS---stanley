@@ -119,7 +119,7 @@ GamePhase gameOperation(GamePhase phase, De2iInterface interface, PerifericValue
             break;
         }
         case EndgamePhase: {
-            phase = lostGame();
+            newPhase = lostGame(periferics);
             break;
         }
     }
@@ -284,7 +284,7 @@ bool runRedLedsAndSwitchesAndCheckIfWin(De2iInterface interface) {
     return false;
 }
 
-void lostGame(PerifericValues& periferics, Timer& timer) {
+GamePhase lostGame(PerifericValues& periferics) {
     // Se apertar um botão errado, acende todos os leds e retorna para a primeira fase
     periferics.setGreenLeds(0xffffffffu);
     periferics.setGreenLeds(0xffffffffu);
