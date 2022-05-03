@@ -134,14 +134,18 @@ bool runGreenLedsAndPushButtonsGameAndCheckIfWin(int roundCount, De2iInterface i
     
     cout << "Esperando botões..." << endl;
     unsigned int LED_INDEX = 0;
+    unsigned int prevValue = 0;
     
     // TODO: add time 
     // Loop para esperar interações do usuário
     while(1) {
         // TODO: handle line up and line down
         unsigned int buttons = interface.readButtons();
-        if (buttons == 0) continue;
         cout << "Valor lido: " << buttons << endl;
+        if (buttons == prevValue) {
+            cout << "ignoring because of selected values"<< endl;
+            continue;
+        }
         
         // Pega a posição do botão apertado; retorna -1 se nenhum ou mais de um forem apertados ao mesmo tempo.
         int positionOfButtonClicked = findPosition(buttons);
