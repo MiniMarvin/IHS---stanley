@@ -14,7 +14,7 @@
 #include <tuple>
 #include <omp.h>
 #include <chrono>
-#include <random.h>
+#include <random>
 
 #include "../de2iInterface/de2iInterface.hpp"
 #include "game.hpp"
