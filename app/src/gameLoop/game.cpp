@@ -156,8 +156,8 @@ bool runGreenLedsAndPushButtonsGameAndCheckIfWin(int roundCount, De2iInterface i
     unsigned int LED_INDEX = 0;
     unsigned int prevValue = 15;
     
-    interface.writeGreenLeds(0xf);
-    usleep(500000);
+    interface.writeGreenLeds(0xff);
+    usleep(200000);
     interface.writeGreenLeds(0x0);
     
     // TODO: add time 
