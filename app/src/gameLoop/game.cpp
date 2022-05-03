@@ -295,6 +295,7 @@ GamePhase switchPhase(int wordSize, int seconds, De2iInterface interface) {
     timer.init(seconds);
     GamePhase newPhase = EndgamePhase;
     cout << "binary word: " << (bitset<18>(word)) << endl;
+    int prevTime = 0;
     
     while (1) {
         auto switches = interface.readSwitches() & mask;
@@ -303,6 +304,10 @@ GamePhase switchPhase(int wordSize, int seconds, De2iInterface interface) {
         
         interface.leftDisplayWrite(seconds);
         interface.writeRedLeds(word);
+        if (seconds != prevTime) {
+            cout << "tick: " << seconds << "s" << endl;
+            prevTime = seconds;
+        }
         
         if (switches == word) {
             newPhase = ButtonPhase;
