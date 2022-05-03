@@ -17,7 +17,6 @@
 #include "../exceptions/DriverException.hpp"
 #include "ioctl_cmds.h"
 
-
 De2iInterface::De2iInterface(char* driverPath) {
     cout << "Using Mock Interface" << endl;
 	cout << "Driver file " << driverPath << " loaded..." << endl;

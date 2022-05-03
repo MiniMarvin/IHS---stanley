@@ -12,14 +12,6 @@ enum De2iDevice {
     DISPLAY_LEFT
 };
 
-typedef struct PerifericValues {
-    unsigned int displayLeft;
-    unsigned int displayRight;
-    unsigned int redLeds;
-    unsigned int greenLeds;
-    PerifericValues(): displayLeft(0), displayRight(0), redLeds(0), greenLeds(0) {}
-} PerifericValues;
-
 class De2iInterface {
 private:
     const int displayMap[16] = {0xC0, 0xF9, 0xA4, 0xB0, 

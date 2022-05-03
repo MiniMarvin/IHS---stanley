@@ -79,10 +79,10 @@ void updatePeriferals(PerifericValues& periferics, De2iInterface interface, Time
     long long elapsedTime = getElapsedTime(startTime);
     long long missingTime = max(0ll, USECONDS_60_FPS - elapsedTime);
     usleep(missingTime);
-    interface.rightDisplayWrite(periferics.displayRight);
-    interface.leftDisplayWrite(periferics.displayLeft);
-    interface.writeGreenLeds(periferics.greenLeds);
-    interface.writeRedLeds(periferics.redLeds);
+    interface.rightDisplayWrite(periferics.getDisplayRight());
+    interface.leftDisplayWrite(periferics.getDisplayLeft());
+    interface.writeGreenLeds(periferics.getGreenLeds());
+    interface.writeRedLeds(periferics.getRedLeds());
 }
 
 // ===========================================================
@@ -214,22 +214,22 @@ pair<int, int> translateButtonToGreenLed(int position) {
     return make_pair(firstLed, secondLed);
 }
 
-void lightUpAndLightDownGreenLed(pair<int, int> positions, De2iInterface interface) {
+void lightUpAndLightDownGreenLed(pair<int, int> positions, PerifericValues periferics) {
     cout << "Acendendo LED Verde na posição " << positions.first  << " e " << positions.second << endl;
-    interface.writeGreenLed(0, positions.first);
-    interface.writeGreenLed(0, positions.second);
+    periferics.setGreenLed(0, positions.first);
+    periferics.setGreenLed(0, positions.second);
 
     sleep(1);
     
     cout << "Apagando LED Verde na posição " << positions.first  << " e " << positions.second << endl;
-    interface.writeGreenLed(1, positions.first);
-    interface.writeGreenLed(1, positions.second);
+    periferics.setGreenLed(1, positions.first);
+    periferics.setGreenLed(1, positions.second);
 }
 
-void lightUpGreenLightFromVector(vector<int> array, De2iInterface interface) {
+void lightUpGreenLightFromVector(vector<int> array, PerifericValues periferics) {
     for(unsigned int i = 0; i < array.size(); i++){
         pair<int, int> ledsToLightUp = translateButtonToGreenLed(array[i]);
-        lightUpAndLightDownGreenLed(ledsToLightUp, interface);
+        lightUpAndLightDownGreenLed(ledsToLightUp, periferics);
     }
 }
 

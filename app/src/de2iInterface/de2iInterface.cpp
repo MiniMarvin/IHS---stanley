@@ -16,9 +16,13 @@
 
 #include "../exceptions/DriverException.hpp"
 #include "ioctl_cmds.h"
+#include <omp.h>
 
 using namespace std;
 
+// =========================================================
+// Interface with the board
+// =========================================================
 De2iInterface::De2iInterface(char* driverPath) {
     int fileDescriptor = 0;
     if ((fileDescriptor = open(driverPath, O_RDWR)) < 0) {

@@ -10,6 +10,7 @@
 
 #include "../de2iInterface/de2iInterface.hpp"
 #include "timer/timer.hpp"
+#include "periferics/Perifericvalues.hpp"
 
 using namespace std;
 

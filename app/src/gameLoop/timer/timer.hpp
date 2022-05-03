@@ -10,13 +10,16 @@ class Timer {
 private:
     TimePoint start;
     unsigned int totalMicroSeconds;
+    bool isLocked;
 public:
-    Timer() {}
+    Timer() : totalMicroSeconds(0u), isLocked(false) {}
     void init(int seconds);
     void uinit(unsigned long long useconds);
     long long missingUSeconds();
     int missingSeconds();
     bool didFinish();
+    void lock();
+    void unlock();
 };
 
 inline TimePoint getCurrentTime();
