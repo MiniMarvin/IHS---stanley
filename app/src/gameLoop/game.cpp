@@ -38,7 +38,7 @@ int gameLoop(char* driverPath) {
     srand(time(0));
     
     De2iInterface interface = De2iInterface(driverPath);
-    GamePhase phase = ButtonPhase;
+    GamePhase phase = IntroPhase;
     
     // TODO: add openMP to split in threads use SECTIONS
     while (1) {
@@ -106,10 +106,13 @@ void IntroPhaseImpl(De2iInterface interface) {
         usleep(100);
     }
     
-    interface.writeRedLeds(0xfffffffffffffffffu);
+    interface.writeRedLeds(0xffffffffu);
     interface.writeGreenLeds(0xffffffffu);
     
     usleep(500);
+    
+    interface.writeRedLeds(0x000000000);
+    interface.writeGreenLeds(0x000000000);
 }
 
 bool runGreenLedsAndPushButtonsGameAndCheckIfWin(int roundCount, De2iInterface interface) {
@@ -288,12 +291,15 @@ GamePhase switchPhase(int wordSize, int seconds, De2iInterface interface) {
     Timer timer = Timer();
     timer.init(seconds);
     GamePhase newPhase = EndgamePhase;
+    cout << "binary word: " << bitset<>(word) << endl;
     
     while (1) {
         auto switches = interface.readSwitches() & mask;
         auto seconds = timer.missingSeconds();
         seconds *= 100;
+        
         interface.leftDisplayWrite(seconds);
+        interface.writeRedLeds(word);
         
         if (switches == word) {
             newPhase = ButtonPhase;
