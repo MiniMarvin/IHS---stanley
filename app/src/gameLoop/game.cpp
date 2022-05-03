@@ -94,22 +94,22 @@ GamePhase gameOperation(GamePhase phase, De2iInterface interface) {
 void IntroPhaseImpl(De2iInterface interface) {
     for(int i = 17; i >= 0; i--) {
         interface.writeRedLed(1, i);
-        usleep(200);
+        usleep(500000);
         interface.writeRedLed(0, i);
-        usleep(100);
+        usleep(500000);
     }
     
     for(int i = 8; i >= 0; i--) {
         interface.writeGreenLed(1, i);
-        usleep(200);
+        usleep(500000);
         interface.writeGreenLed(0, i);
-        usleep(100);
+        usleep(500000);
     }
     
     interface.writeRedLeds(0xffffffffu);
     interface.writeGreenLeds(0xffffffffu);
     
-    usleep(500);
+    usleep(500000);
     
     interface.writeRedLeds(0x000000000);
     interface.writeGreenLeds(0x000000000);
