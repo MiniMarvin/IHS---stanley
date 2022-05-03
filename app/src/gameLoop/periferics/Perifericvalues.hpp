@@ -39,9 +39,12 @@ public:
     }
     
     void setGreenLed(bool bit, int index) {
+        cout << "Update bit to " << bit << " at index " << index << endl;
         unsigned int mask = bit << index;
+        cout << "mask: " << mask << endl;
         #pragma omp atomic
         greenLeds = greenLeds & mask;
+        cout << "greenLeds: " << greenLeds << endl;
     }
     
     unsigned int getDisplayLeft() {
