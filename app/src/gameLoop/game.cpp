@@ -66,6 +66,7 @@ int gameLoop(char* driverPath) {
 // que vai atualizar a tela a 60 FPS.
 GamePhase gameOperation(GamePhase phase, De2iInterface interface) {
     GamePhase newPhase = phase;
+    showPoints(interface);
     
     switch (phase) {
         case IntroPhase: {
@@ -179,7 +180,6 @@ bool runGreenLedsAndPushButtonsGameAndCheckIfWin(int roundCount, De2iInterface i
             
             // Se a posição for a última, vai para a próxima fase
             if(LED_INDEX == orderToLightUp.size() - 1) {
-                updatePoints(interface);
                 cout << "Parabéns! Seguindo para o segundo nível!" << endl;
                 return true;
             }
