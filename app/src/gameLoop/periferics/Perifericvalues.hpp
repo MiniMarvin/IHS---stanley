@@ -2,6 +2,9 @@
 #define __PERIFERIC_VALUES
 
 #include <omp.h>
+#include <iostream>
+
+using namespace std;
 
 class PerifericValues {
 private:
