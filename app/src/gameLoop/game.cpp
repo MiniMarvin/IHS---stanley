@@ -27,6 +27,9 @@ using namespace std;
 // ============================================================
 const int BUTTON_COUNT = 4;
 int TOTAL_POINTS = 0;
+int BUTTON_SEQUENCE_SIZE = 1;
+int SWITCH_WORD_SIZE = 8;
+int SWITCH_SECONDS_COUNT = 10;
 
 // ============================================================
 // Game Loop
@@ -68,7 +71,7 @@ GamePhase gameOperation(GamePhase phase, De2iInterface interface) {
         case IntroPhase: {
             cout << "IntroPhase" << endl;
             IntroPhaseImpl(interface);
-            newPhase = SwitchPhase;
+            newPhase = ButtonPhase;
             break;
         }
         case ButtonPhase: {
@@ -76,18 +79,35 @@ GamePhase gameOperation(GamePhase phase, De2iInterface interface) {
             // TODO: fazer essas fases serem incrementais e o jogo ser no mínimo um jogo infinito
             // Primeira fase: acende aleatoriamente 5 valores de leds verde e compara com os botões apertados
             // TODO: add progress
-            bool win = runGreenLedsAndPushButtonsGameAndCheckIfWin(5, interface);
+            bool win = runGreenLedsAndPushButtonsGameAndCheckIfWin(BUTTON_SEQUENCE_SIZE, interface);
             if(win) newPhase = SwitchPhase;
             else newPhase = EndgamePhase;
+            BUTTON_SEQUENCE_SIZE = BUTTON_SEQUENCE_SIZE + 1;
+            
+            interface.writeRedLeds(0);
+            interface.writeGreenLeds(0);
+            interface.writeLeftDisplay(0);
+            interface.writeRightDisplay(0);
             break;
         }
         case SwitchPhase: {
             cout << "SwitchPhase" << endl;
-            int wordSize = 8, seconds = 5;
+            int wordSize = SWITCH_WORD_SIZE, seconds = SWITCH_SECONDS_COUNT;
             newPhase = switchPhase(wordSize, seconds, interface);
+            if (SWITCH_WORD_SIZE < 18) {
+                SWITCH_WORD_SIZE += 1;
+            } else {
+                if (SWITCH_SECONDS_COUNT > 3) SWITCH_SECONDS_COUNT -= 1;
+            }
+            
+            interface.writeRedLeds(0);
+            interface.writeGreenLeds(0);
+            interface.writeLeftDisplay(0);
+            interface.writeRightDisplay(0);
             break;
         }
         case EndgamePhase: {
+            // TODO: ask for the user to insert it's username and maybe but just maybe add a scoreboard?
             newPhase = lostGame(interface);
             break;
         }
