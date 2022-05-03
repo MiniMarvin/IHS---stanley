@@ -103,7 +103,7 @@ bool runGreenLedsAndPushButtonsGameAndCheckIfWin(int roundCount, De2iInterface i
         // TODO: handle line up and line down
         unsigned int buttons = interface.readButtons();
         cout << "Valor lido: " << buttons << endl;
-        if (buttons == prevValue) {
+        if (buttons == prevValue || buttons == 15) {
             cout << "ignoring because of selected values"<< endl;
             continue;
         }
