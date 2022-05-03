@@ -88,7 +88,7 @@ void updatePeriferals(PerifericValues& periferics, De2iInterface interface, Time
     interface.leftDisplayWrite(periferics.getDisplayLeft());
     interface.writeGreenLeds(periferics.getGreenLeds());
     interface.writeRedLeds(periferics.getRedLeds());
-    cout << "Writing leds: " << bitset<4>(periferics.getGreenLeds()) << endl;
+    cout << "Writing leds: " << bitset<8>(periferics.getGreenLeds()) << endl;
 }
 
 // ===========================================================
