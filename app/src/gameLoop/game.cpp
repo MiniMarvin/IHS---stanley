@@ -66,9 +66,11 @@ GamePhase gameOperation(GamePhase phase, De2iInterface interface) {
     
     switch (phase) {
         case IntroPhase: {
+            cout << "IntroPhase" << endl;
             IntroPhaseImpl(interface);
         }
         case ButtonPhase: {
+            cout << "ButtonPhase" << endl;
             // TODO: fazer essas fases serem incrementais e o jogo ser no mínimo um jogo infinito
             // Primeira fase: acende aleatoriamente 5 valores de leds verde e compara com os botões apertados
             // TODO: add progress
@@ -78,6 +80,7 @@ GamePhase gameOperation(GamePhase phase, De2iInterface interface) {
             break;
         }
         case SwitchPhase: {
+            cout << "SwitchPhase" << endl;
             int wordSize = 8, seconds = 5;
             newPhase = switchPhase(wordSize, seconds, interface);
             break;
@@ -94,22 +97,22 @@ GamePhase gameOperation(GamePhase phase, De2iInterface interface) {
 void IntroPhaseImpl(De2iInterface interface) {
     for(int i = 17; i >= 0; i--) {
         interface.writeRedLed(1, i);
-        usleep(500000);
+        usleep(100000);
         interface.writeRedLed(0, i);
-        usleep(500000);
+        usleep(100000);
     }
     
     for(int i = 8; i >= 0; i--) {
         interface.writeGreenLed(1, i);
-        usleep(500000);
+        usleep(100000);
         interface.writeGreenLed(0, i);
-        usleep(500000);
+        usleep(100000);
     }
     
     interface.writeRedLeds(0xffffffffu);
     interface.writeGreenLeds(0xffffffffu);
     
-    usleep(500000);
+    sleep(1);
     
     interface.writeRedLeds(0x000000000);
     interface.writeGreenLeds(0x000000000);
@@ -264,9 +267,9 @@ bool runRedLedsAndSwitchesAndCheckIfWin(De2iInterface interface) {
 GamePhase lostGame(De2iInterface interface) {
     // Se apertar um botão errado, acende todos os leds e retorna para a primeira fase
     interface.writeGreenLeds(0xffffffffu);
-    interface.writeGreenLeds(0xffffffffu);
+    usleep(500000);
+    interface.writeGreenLeds(0x0);
     
-    sleep(1);
     cout << "Errou :( Voltando para o primeiro nível" << endl;
     return IntroPhase;
 }
