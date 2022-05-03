@@ -117,6 +117,8 @@ GamePhase gameOperation(GamePhase phase, De2iInterface interface) {
 }
 
 void IntroPhaseImpl(De2iInterface interface) {
+    resetPoints(interface);
+    
     for(int i = 17; i >= 0; i--) {
         interface.writeRedLed(1, i);
         usleep(100000);
@@ -173,12 +175,13 @@ bool runGreenLedsAndPushButtonsGameAndCheckIfWin(int roundCount, De2iInterface i
             
             // Se a posição for a última, vai para a próxima fase
             if(LED_INDEX == orderToLightUp.size() - 1) {
+                updatePoints(interface);
                 cout << "Parabéns! Seguindo para o segundo nível!" << endl;
                 return true;
             }
             
             LED_INDEX++;
-            updatePoints(interface);
+            
         } else {
             cout << "deu ruim" << endl;
             return false;
