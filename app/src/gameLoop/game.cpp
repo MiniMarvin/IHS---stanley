@@ -83,11 +83,6 @@ GamePhase gameOperation(GamePhase phase, De2iInterface interface) {
             if(win) newPhase = SwitchPhase;
             else newPhase = EndgamePhase;
             BUTTON_SEQUENCE_SIZE = BUTTON_SEQUENCE_SIZE + 1;
-            
-            interface.writeRedLeds(0);
-            interface.writeGreenLeds(0);
-            interface.rightDisplayWrite(0);
-            interface.leftDisplayWrite(0);
             break;
         }
         case SwitchPhase: {
@@ -101,8 +96,6 @@ GamePhase gameOperation(GamePhase phase, De2iInterface interface) {
             }
             
             interface.writeRedLeds(0);
-            interface.writeGreenLeds(0);
-            interface.rightDisplayWrite(0);
             interface.leftDisplayWrite(0);
             break;
         }
