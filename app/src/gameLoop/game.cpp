@@ -86,8 +86,8 @@ GamePhase gameOperation(GamePhase phase, De2iInterface interface) {
             
             interface.writeRedLeds(0);
             interface.writeGreenLeds(0);
-            interface.writeLeftDisplay(0);
-            interface.writeRightDisplay(0);
+            interface.rightDisplayWrite(0);
+            interface.leftDisplayWrite(0);
             break;
         }
         case SwitchPhase: {
@@ -102,8 +102,8 @@ GamePhase gameOperation(GamePhase phase, De2iInterface interface) {
             
             interface.writeRedLeds(0);
             interface.writeGreenLeds(0);
-            interface.writeLeftDisplay(0);
-            interface.writeRightDisplay(0);
+            interface.rightDisplayWrite(0);
+            interface.leftDisplayWrite(0);
             break;
         }
         case EndgamePhase: {
