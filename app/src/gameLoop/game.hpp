@@ -18,6 +18,8 @@ enum GamePhase {
     IntroPhase,
     ButtonPhase,
     SwitchPhase,
+    ToSwitch,
+    ToButton,
     EndgamePhase
 };
 

@@ -70,6 +70,7 @@ GamePhase gameOperation(GamePhase phase, De2iInterface interface) {
     switch (phase) {
         case IntroPhase: {
             cout << "IntroPhase" << endl;
+            resetPoints(interface);
             IntroPhaseImpl(interface);
             newPhase = ButtonPhase;
             break;
@@ -80,9 +81,15 @@ GamePhase gameOperation(GamePhase phase, De2iInterface interface) {
             // Primeira fase: acende aleatoriamente 5 valores de leds verde e compara com os botões apertados
             // TODO: add progress
             bool win = runGreenLedsAndPushButtonsGameAndCheckIfWin(BUTTON_SEQUENCE_SIZE, interface);
-            if(win) newPhase = SwitchPhase;
+            if(win) newPhase = ToSwitch;
             else newPhase = EndgamePhase;
             BUTTON_SEQUENCE_SIZE = BUTTON_SEQUENCE_SIZE + 1;
+            break;
+        }
+        case ToSwitch: {
+            cout << "IntroPhase" << endl;
+            IntroPhaseImpl(interface);
+            newPhase = SwitchPhase;
             break;
         }
         case SwitchPhase: {
@@ -99,6 +106,12 @@ GamePhase gameOperation(GamePhase phase, De2iInterface interface) {
             interface.leftDisplayWrite(0);
             break;
         }
+        case ToButton: {
+            cout << "IntroPhase" << endl;
+            IntroPhaseImpl(interface);
+            newPhase = ButtonPhase;
+            break;
+        }
         case EndgamePhase: {
             // TODO: ask for the user to insert it's username and maybe but just maybe add a scoreboard?
             newPhase = lostGame(interface);
@@ -110,8 +123,6 @@ GamePhase gameOperation(GamePhase phase, De2iInterface interface) {
 }
 
 void IntroPhaseImpl(De2iInterface interface) {
-    resetPoints(interface);
-    
     for(int i = 17; i >= 0; i--) {
         interface.writeRedLed(1, i);
         usleep(100000);
@@ -287,6 +298,14 @@ GamePhase lostGame(De2iInterface interface) {
     interface.writeGreenLeds(0xffffffffu);
     usleep(500000);
     interface.writeGreenLeds(0x0);
+    usleep(500000);
+    interface.writeGreenLeds(0xffffffffu);
+    usleep(500000);
+    interface.writeGreenLeds(0x0);
+    usleep(500000);
+    interface.writeGreenLeds(0xffffffffu);
+    usleep(500000);
+    interface.writeGreenLeds(0x0);
     
     cout << "Errou :( Voltando para o primeiro nível" << endl;
     return IntroPhase;
@@ -328,7 +347,7 @@ GamePhase switchPhase(int wordSize, int seconds, De2iInterface interface) {
         }
         
         if (switches == word) {
-            newPhase = ButtonPhase;
+            newPhase = ToButton;
             updatePoints(interface);
             break;
         }
