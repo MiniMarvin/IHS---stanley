@@ -193,8 +193,12 @@ void lightUpGreenLightFromVector(vector<int> array, De2iInterface interface) {
 
 // popcnt == 1 é uma opção também
 int isPowerOfTwo(unsigned n) {
+    int idx = 0;
+    for (; n > 0; idx++) {
+        n >> 1;
+    }
     
-    return n && (!(n & (n - 1)));
+    return !(idx ^ (1 << idx));
 }
 
 // Encontra a posição do único bit setado em 1; se houve mais de um bit em 1, retorna -1
