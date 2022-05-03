@@ -156,6 +156,10 @@ bool runGreenLedsAndPushButtonsGameAndCheckIfWin(int roundCount, De2iInterface i
     unsigned int LED_INDEX = 0;
     unsigned int prevValue = 15;
     
+    interface.writeGreenLeds(0xf);
+    usleep(500000);
+    interface.writeGreenLeds(0x0);
+    
     // TODO: add time 
     // Loop para esperar interações do usuário
     while(1) {
@@ -181,6 +185,7 @@ bool runGreenLedsAndPushButtonsGameAndCheckIfWin(int roundCount, De2iInterface i
             // Se a posição for a última, vai para a próxima fase
             if(LED_INDEX == orderToLightUp.size() - 1) {
                 cout << "Parabéns! Seguindo para o segundo nível!" << endl;
+                updatePoints(interface);
                 return true;
             }
             
